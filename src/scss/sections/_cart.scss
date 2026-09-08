@@ -1,0 +1,247 @@
+@use "../abstracts/mixins" as *;
+@use "../abstracts/variables" as *;
+
+.cart-page {
+  padding: 1rem;
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  &__summary,
+  &__checkout {
+    background: $white-1;
+    border-radius: 1.25rem;
+    padding: 1rem;
+    border: 1px solid $border-color;
+  }
+
+  &__header {
+    .heading {
+      font-family: $heading-font-style;
+      font-size: 2rem;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+  }
+
+  &__empty {
+    display: none;
+    padding: 1rem 0;
+    color: $black-70;
+    font-size: 1rem;
+  }
+
+  &__items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &__item {
+    display: flex;
+    gap: 0.8rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid $border-color;
+  }
+
+  &__image-box {
+    width: 5.5rem;
+    height: 5.5rem;
+    background: $category-div-bg-color;
+    border-radius: 0.9rem;
+    overflow: hidden;
+    flex-shrink: 0;
+
+    .image-box-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  &__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.7rem;
+
+    .meta-heading {
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 0.2rem;
+    }
+
+    .item-size {
+      font-size: 0.72rem;
+      opacity: 0.7;
+    }
+  }
+
+  &__bottom-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.6rem;
+  }
+
+  &__price-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  &__price {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  &__old-price {
+    font-size: 0.85rem;
+    color: $black-50;
+    text-decoration: line-through;
+  }
+
+  &__qty-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 5.25rem;
+    background: $white-2;
+    border-radius: 999px;
+    padding: 0.45rem 0.6rem;
+
+    .qty-btn {
+      border: none;
+      background: transparent;
+      font-size: 1.3rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .qty-no {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+  }
+
+  &__remove {
+    border: 0;
+    background: transparent;
+    color: $discount-color;
+    cursor: pointer;
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+
+  &__checkout {
+    .checkout-heading {
+      font-family: $heading-font-style;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+  &__promo {
+    margin-bottom: 1rem;
+  }
+
+  &__promo-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+
+    .promo-input {
+      flex: 1;
+      height: 2.75rem;
+      border: 1px solid $border-color;
+      border-radius: 999px;
+      padding: 0 1rem;
+      font-size: 0.95rem;
+    }
+
+    .promo-button {
+      border: none;
+      background: $black-1;
+      color: $white-1;
+      height: 2.75rem;
+      border-radius: 999px;
+      padding: 0 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+
+  &__promo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    color: $black-1
+  }
+
+  &__summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+    margin-bottom: 0.8rem;
+
+    &.discount {
+      color: $discount-color;
+    }
+
+    &.total {
+      font-size: 1.1rem;
+      font-weight: 700;
+      padding-top: 0.75rem;
+      border-top: 1px solid $border-color;
+      margin-top: 0.75rem;
+    }
+  }
+
+  &__checkout-btn {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    background: $black-1;
+    color: $white-1;
+    border: none;
+    border-radius: 50rem;
+    height: 3rem;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 1rem;
+  }
+
+  @include respond-to(desktop) {
+    padding: 2rem 1rem 4rem;
+
+    &__container {
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    &__summary {
+      width: 62%;
+    }
+
+    &__checkout {
+      width: 38%;
+      max-width: 24rem;
+    }
+  }
+}

@@ -1,0 +1,146 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+.header{
+    width: 100%;
+    background-color: $primary-bg-color;
+    &__container{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+        position: relative;
+    }
+    &__links{
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    &__logo{
+        font-family: $heading-font-style;
+        font-size: 1.6rem;
+    }
+    &__menu{
+        display: flex;
+        flex-direction: column;
+        gap: 3.5px;
+        padding: 4.88px 2.63px 4.88px 2.63px;
+        width: 1.5rem;
+        height: 1.5rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        span{
+            width: 100%;
+            height: 2px;
+            background: black;
+            border-radius: 5rem;
+        }
+        &.active {
+        span:nth-child(1) {
+            transform: translateY(6px) rotate(45deg);
+            transition: ease-in 0.1s; 
+        }
+
+        span:nth-child(2) {
+            opacity: 0;
+        }
+
+        span:nth-child(3) {
+            transform: translateY(-6px) rotate(-45deg);
+            transition: ease-in 0.1s;
+        }
+    }
+    }
+    &__nav-items{
+            display: none;
+            &.active{
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                padding: 2rem;
+                background: $hero-bg-color;
+                z-index: 1;
+            }
+        }
+    &__actions{
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        &__search-box{
+            padding: 1rem;
+            display: none;
+            &__input{
+                background-color: transparent;
+                border: none;
+                width: 100%;
+                outline: none;
+                padding: 0.5rem 0;
+            }
+            &__icon{
+                height: 1.2rem;
+                filter: invert(50%);
+            }
+        }
+    }
+    &__cart-link{
+        position: relative;
+    }
+    &__cart-count{
+        position: absolute;
+        top: -0.5rem;
+        right: -0.6rem;
+        min-width: 1.15rem;
+        height: 1.15rem;
+        padding: 0 0.25rem;
+        border-radius: 50%;
+        background-color: #ff3333;
+        color: #ffffff;
+        display: grid;
+        place-items: center;
+        font-size: 0.7rem;
+        line-height: 1;
+    }
+
+
+}
+
+@include respond-to(desktop) {
+
+    .header{
+        &__container{
+            padding: 1.5rem 6.25rem;
+        }
+        &__links{
+            gap: 2.5rem;
+        }
+        &__menu{
+            display: none;
+        }
+        &__nav-items{
+            display: flex;
+            gap: 1.5rem;
+            font-size: 1rem;
+        }
+        &__actions{
+            &__search-box{
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 36rem;
+            height: 3rem;
+            border-radius: 50rem;
+            border: none;
+            background-color: #F0F0F0;
+            margin-right: 2.5rem;
+        }
+        }
+    }
+    .search-icon{
+        display: none;
+    }
+}

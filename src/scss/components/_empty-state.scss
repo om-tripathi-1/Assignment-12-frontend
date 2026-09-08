@@ -1,0 +1,21 @@
+@use "../abstracts/variables" as *;
+
+.empty-state {
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: $black-70;
+
+  &__icon {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: 0 auto 0.75rem;
+    border: 1px solid $border-color;
+    border-radius: 50%;
+    font-weight: 700;
+  }
+
+  h2 { margin-bottom: 0.35rem; color: $black-1; font-size: 1.1rem; }
+  p { font-size: 0.9rem; }
+}

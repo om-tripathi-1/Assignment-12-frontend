@@ -1,0 +1,22 @@
+@use "base/reset";
+@use "base/typoraphy";
+
+@use "abstracts/variables";
+
+@use "layout/announcement-bar";
+@use "layout/header";
+@use "layout/footer";
+@use "layout/breadcurmb";
+@use "components/empty-state";
+
+@use"sections/hero";
+@use "sections/brands";
+@use "sections/newArrivals";
+@use "sections/topSelling";
+@use "sections/category";
+@use "sections/testtemonials";
+@use "sections/newsletter";
+@use "sections/cart";
+@use "sections/login";
+@use "sections/product-detail";
+@use "sections/category-page";

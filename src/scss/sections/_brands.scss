@@ -1,0 +1,27 @@
+@use "../abstracts/mixins" as *;
+@use "../abstracts/variables" as *;
+
+.brands{
+    width: 100vw;
+    &__container{
+        height: 9.12rem;
+        background-color: $black-1;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-content: center;
+        justify-content: center;
+        @include respond-to(desktop){
+            justify-content: space-around;
+            height: 7.625rem;
+        }
+    }
+    &__icons{
+        width: 6.837em;
+        height: 1.578em;
+        @include respond-to(desktop){
+            width: 9.75rem;
+            height: 2rem;
+        }
+    }
+}

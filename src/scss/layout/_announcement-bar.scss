@@ -1,0 +1,16 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+.announcement-bar{
+    width: 100vw;
+    background-color: $banner-bg-color;
+    @include flex-center;
+    height: 2.12rem;
+    &__text{
+        color: $secondary-text-color;
+        font-size: 12px;
+        a{
+            text-decoration: underline;
+        }
+    }
+}

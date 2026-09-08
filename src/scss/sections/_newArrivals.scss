@@ -1,0 +1,100 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+.new-arrivals{
+    border-bottom:1px solid $border-color;
+    padding-bottom: 5rem;
+    @include respond-to(desktop){
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    &__heading{
+        font-family: $heading-font-style;
+        font-size: 2rem;
+        margin: 3.12rem 3.75rem 2rem 3.7rem;
+        @include respond-to(desktop){
+            font-size: 3em;
+        }
+    }
+    &__container{
+        display: flex;
+        padding: 1rem;
+        gap: 1rem;
+        overflow-x: auto;
+        @include respond-to(desktop){
+            justify-content: center;
+        }
+
+    }
+    &__product-card{
+        width: auto;
+        height: auto;
+        cursor: pointer;
+        &:hover{
+            transform: scale(1.02);
+            transition: 0.3s ease-in-out;
+        }
+        .image{
+            width: 12.37rem;
+            height: 12.5rem;
+            @include respond-to(desktop){
+                height: auto;
+                width: auto;
+        }
+        }
+        .text-area{
+            .title{
+                font-size: 1rem;
+                font-weight: 700;
+                margin-top: 10px;
+            }
+            .rating{
+                margin: 5px;
+                display: flex;
+                gap: 1rem;
+                .product-rating{display: flex;}
+            }
+            .price-row {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin-top: 0.3rem;
+            }
+            .price{
+                font-size: 1.25rem;
+                margin: 0;
+            }
+            .price__original {
+                color: $white-3;
+                text-decoration: line-through;
+                font-size: 0.95rem;
+            }
+            .price__discount {
+                background: $peach;
+                color: $discount-color;
+                font-size: 0.72rem;
+                font-weight: 700;
+                border-radius: 999px;
+                padding: 0.2rem 0.5rem;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    }
+    &__button{
+        font-size: 0.8em;
+        width: 90%;
+        padding: 13.5px;
+        margin: 1rem;
+        border-radius: 50rem;
+        border: solid 1px;
+        background-color: transparent;
+        @include respond-to(desktop){
+            width: 15%;
+
+        }
+    }
+}

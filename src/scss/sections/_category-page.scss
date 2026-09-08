@@ -1,0 +1,114 @@
+@use "../abstracts/mixins" as *;
+@use "../abstracts/variables" as *;
+
+.category-page {
+  padding: 0 1rem 4rem;
+
+  &__heading-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  &__heading {
+    font-family: $heading-font-style;
+    font-size: 2rem;
+    text-transform: uppercase;
+  }
+
+  &__count {
+    color: $black-50;
+    font-size: 0.75rem;
+    margin-top: 0.35rem;
+  }
+
+  &__filter-toggle,
+  &__sort {
+    background: $white-2;
+    border: 0;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    padding: 0.7rem 0.9rem;
+  }
+
+  &__filter-toggle { display: block; }
+
+  &__sort {
+    display: none;
+
+    span { color: $black-50; }
+    select { border: 0; background: transparent; font-weight: 700; outline: 0; }
+  }
+
+  &__layout { position: relative; }
+
+  &__filters {
+    display: none;
+    background: $white-1;
+    border: 1px solid $border-color;
+    border-radius: 1rem;
+    padding: 1rem;
+
+    &.is-open { display: block; position: absolute; z-index: 2; width: 100%; }
+  }
+
+  &__filters-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid $border-color;
+    padding-bottom: 1rem;
+
+    h2 { font-size: 1.2rem; }
+    button { border: 0; background: transparent; font-size: 1.5rem; }
+  }
+
+  &__filter-section { border-bottom: 1px solid $border-color; padding: 1.1rem 0; }
+  &__filter-title { font-size: 1rem; margin-bottom: 0.75rem; }
+
+  &__category-list { display: grid; gap: 0.65rem; }
+  &__category-link { display: flex; justify-content: space-between; color: $black-70; font-size: 0.85rem; }
+
+  &__price-fields { display: flex; gap: 0.5rem; }
+  &__price-fields label { display: grid; gap: 0.35rem; flex: 1; color: $black-50; font-size: 0.7rem; }
+  &__price-fields input { width: 100%; border: 1px solid $border-color; border-radius: 999px; padding: 0.55rem 0.7rem; }
+  &__checkbox { display: flex; gap: 0.5rem; font-size: 0.85rem; }
+  &__apply { width: 100%; border: 0; border-radius: 999px; background: $black-1; color: $white-1; padding: 0.8rem; margin-top: 1rem; }
+
+  &__results { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem 0.75rem; }
+  &__product-card { min-width: 0; }
+  &__product-card .image { aspect-ratio: 1 / 1.08; background: $category-div-bg-color; border-radius: 0.8rem; overflow: hidden; }
+  &__product-card .image img { width: 100%; height: 100%; object-fit: cover; }
+  &__product-card .text-area { padding-top: 0.55rem; }
+  &__product-card .title { font-size: 0.85rem; line-height: 1.25; }
+  &__product-card .rating { display: flex; align-items: center; gap: 0.35rem; color: $black-50; font-size: 0.65rem; margin: 0.3rem 0; }
+  &__product-card .product-rating { color: $rating-color; letter-spacing: 0.05rem; }
+  &__product-card .price-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem; }
+  &__product-card .price { font-size: 1rem; }
+  &__product-card .price__original { color: $white-3; font-size: 0.75rem; text-decoration: line-through; }
+  &__product-card .badge { background: $peach; color: $discount-color; font-size: 0.65rem; padding: 0.2rem 0.4rem; border-radius: 999px; }
+
+  &__message { grid-column: 1 / -1; padding: 3rem 0; text-align: center; color: $black-50; }
+  &__pagination { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid $border-color; margin-top: 2rem; padding-top: 1rem; font-size: 0.75rem; }
+  &__pagination button { border: 1px solid $border-color; border-radius: 999px; background: $white-1; padding: 0.6rem 0.8rem; }
+  &__pagination button:disabled { color: $white-3; cursor: not-allowed; }
+
+  @include respond-to(desktop) {
+    max-width: 75rem;
+    margin: 0 auto;
+    padding: 0 1rem 5rem;
+
+    &__heading-row { align-items: center; margin-bottom: 2rem; }
+    &__heading { font-size: 2.5rem; }
+    &__filter-toggle { display: none; }
+    &__sort { display: block; }
+    &__layout { display: grid; grid-template-columns: 14rem minmax(0, 1fr); gap: 1rem; }
+    &__filters { display: block; position: static; }
+    &__filters-header button { display: none; }
+    &__results { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem 1rem; }
+    &__product-card .title { font-size: 0.95rem; }
+    &__product-card .price { font-size: 1.1rem; }
+  }
+}

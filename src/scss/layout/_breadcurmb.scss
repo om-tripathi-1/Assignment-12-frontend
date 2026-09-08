@@ -1,0 +1,25 @@
+@use "../abstracts/mixins" as *;
+@use "../abstracts/variables" as *;
+
+.breadcrumb{
+    width: 100vw;
+    padding: 1rem;
+    @include respond-to(desktop){
+        padding-left: 6.2rem;
+    }
+    &__prev{
+        font-size: 0.75rem;
+        opacity: 60%;
+        margin: 0 0.5rem;
+        @include respond-to(desktop){
+            font-size: 1rem;
+        }
+    }
+    &__current{
+        font-size: 0.75rem;
+        margin: 0 0.5rem;
+        @include respond-to(desktop){
+            font-size: 1rem;
+        }
+    }
+}
