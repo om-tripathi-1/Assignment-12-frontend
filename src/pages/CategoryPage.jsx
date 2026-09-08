@@ -31,19 +31,16 @@ const CategoryPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  // Find matching category ID from category route param
   const selectedCategory = categories.find(
     (category) =>
       category.name?.toLowerCase() === (categoryName || "").toLowerCase()
   );
   const selectedCategoryId = selectedCategory?._id;
 
-  // Determine dynamic page title
   const pageTitle = searchQuery
     ? `Search: "${searchQuery}"`
     : selectedCategory?.name || categoryName || "All Products";
 
-  // Fetch available categories once on mount
   useEffect(() => {
     let isCurrent = true;
 
@@ -68,14 +65,12 @@ const CategoryPage = () => {
     };
   }, []);
 
-  // Fetch products matching category, search term, filters, and page index
   useEffect(() => {
     let isCurrent = true;
 
     const loadProducts = async () => {
       if (areCategoriesLoading) return;
 
-      // If category name was provided in URL but didn't match any category
       if (categoryName && !selectedCategoryId) {
         setProducts([]);
         setTotalPages(1);
@@ -176,7 +171,6 @@ const CategoryPage = () => {
           filters={filters}
           onFilterChange={(e) => {
             updateFilter(e);
-            // Auto apply sort changes
             if (e.target.name === "sort") {
               setAppliedFilters((prev) => ({ ...prev, sort: e.target.value }));
             }

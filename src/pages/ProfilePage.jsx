@@ -17,9 +17,6 @@ const formatDate = (value) => {
 
 const formatPrice = (value) => `$${Number(value || 0).toFixed(0)}`;
 
-/**
- * Customer profile view displaying user credentials and past order history.
- */
 const ProfilePage = () => {
   const navigate = useNavigate();
   const { user, isLoading: isAuthLoading, logout } = useAuth();
@@ -100,7 +97,6 @@ const ProfilePage = () => {
           </button>
         </div>
 
-        {/* User Account Card */}
         <section
           className="profile-page__details"
           aria-labelledby="profile-details-title"
@@ -124,7 +120,6 @@ const ProfilePage = () => {
           </dl>
         </section>
 
-        {/* User Orders Listing */}
         <section
           className="profile-page__orders"
           aria-labelledby="profile-orders-title"
@@ -180,4 +175,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default ProfilePage;

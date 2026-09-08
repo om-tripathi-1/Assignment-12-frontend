@@ -46,10 +46,6 @@ const testimonials = [
   },
 ];
 
-/**
- * Main landing page featuring the hero banner, brand partners,
- * newest arrivals, top selling products, dress styles, and customer testimonials.
- */
 const HomePage = () => {
   const navigate = useNavigate();
   const [newArrivals, setNewArrivals] = useState([]);
@@ -57,7 +53,6 @@ const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const testimonialsRef = useRef(null);
 
-  // Smooth scroll handler for testimonials carousel
   const scrollTestimonials = (direction) => {
     const carousel = testimonialsRef.current;
     const firstCard = carousel?.firstElementChild;
@@ -83,7 +78,6 @@ const HomePage = () => {
         if (isMounted) {
           setNewArrivals(newestResponse.products?.slice(0, 4) || []);
           const products = catalogResponse.products || [];
-          // Pick top items from catalog
           setTopSelling(products.slice(0, 4));
         }
       } catch (error) {
@@ -114,7 +108,6 @@ const HomePage = () => {
       <Hero />
       <Brands />
 
-      {/* New Arrivals Section */}
       <section className="new-arrivals" id="new-arrivals">
         <h2 className="new-arrivals__heading">New Arrivals</h2>
         <div className="new-arrivals__container">
@@ -133,7 +126,6 @@ const HomePage = () => {
         />
       </section>
 
-      {/* Top Selling Section */}
       <section className="top-selling" id="top-selling">
         <h2 className="top-selling__heading">Top Selling</h2>
         <div className="top-selling__container">
@@ -152,10 +144,8 @@ const HomePage = () => {
         />
       </section>
 
-      {/* Browse By Dress Style */}
       <CategorySection />
 
-      {/* Customer Testimonials Carousel */}
       <section className="testemonials" aria-labelledby="testimonials-heading">
         <div className="testemonials__header">
           <h2 id="testimonials-heading" className="testemonials__heading">
@@ -198,4 +188,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default HomePage;

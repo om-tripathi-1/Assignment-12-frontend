@@ -3,9 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import AuthForm from "../components/ui/AuthForm";
 import { useAuth } from "../contexts/AuthContext";
 
-/**
- * User login page. Authenticates user and returns them to their previous page.
- */
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();

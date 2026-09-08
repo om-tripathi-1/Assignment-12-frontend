@@ -7,9 +7,6 @@ import { useCart } from "../contexts/CartContext";
 
 const formatPrice = (value) => `$${Number(value || 0).toFixed(0)}`;
 
-/**
- * Single line item in the shopping cart.
- */
 const CartItem = ({ item, onQuantityChange, onRemove }) => (
   <article className="cart-page__item">
     <div className="cart-page__image-box">
@@ -75,9 +72,6 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => (
   </article>
 );
 
-/**
- * Shopping bag review and checkout page.
- */
 const CartPage = () => {
   const { items, isLoading, updateItem, removeItem, clearCart } = useCart();
 
@@ -88,7 +82,6 @@ const CartPage = () => {
   const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
 
-  // Subtotal calculation derived from current item quantities and prices
   const subtotal = useMemo(
     () =>
       items.reduce(
@@ -165,7 +158,6 @@ const CartPage = () => {
 
       <main className="cart-page">
         <div className="cart-page__container">
-          {/* Cart Items List */}
           <section className="cart-page__summary" aria-labelledby="cart-heading">
             <div className="cart-page__header">
               <h1 id="cart-heading" className="heading">
@@ -194,7 +186,6 @@ const CartPage = () => {
             )}
           </section>
 
-          {/* Order Financials & Checkout Callout */}
           <aside className="cart-page__checkout" aria-labelledby="order-summary-title">
             <h2 id="order-summary-title" className="checkout-heading">
               Order Summary
@@ -221,7 +212,6 @@ const CartPage = () => {
               <strong>{formatPrice(total)}</strong>
             </div>
 
-            {/* Promo Code Entry */}
             <div className="cart-page__promo">
               <div className="cart-page__promo-box">
                 <input
@@ -275,7 +265,6 @@ const CartPage = () => {
         </div>
       </main>
 
-      {/* Checkout Modal Dialog */}
       {isCheckoutOpen && (
         <CheckoutModal
           items={items}
@@ -290,4 +279,4 @@ const CartPage = () => {
   );
 };
 
-export default CartPage;
+export default CartPage;

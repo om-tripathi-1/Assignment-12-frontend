@@ -10,11 +10,6 @@ import {
 } from "../api/product.service";
 import { useCart } from "../contexts/CartContext";
 
-/**
- * Detailed single product view page.
- * Displays interactive image gallery, sizing selector, quantity stepper,
- * add-to-cart workflow with auth redirects, and customer reviews.
- */
 const ProductPage = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
@@ -47,7 +42,6 @@ const ProductPage = () => {
           setProduct(loadedProduct);
           setReviews(Array.isArray(reviewResponse) ? reviewResponse : []);
 
-          // Pre-select first size variant if available
           const availableSizes =
             loadedProduct?.variants?.map((v) => v.size).filter(Boolean) || [];
           if (availableSizes.length > 0) {
@@ -139,7 +133,6 @@ const ProductPage = () => {
 
       <main className="product-detail-page">
         <section className="product-detail">
-          {/* Gallery with vertical thumbnails and main preview */}
           <div className="product-gallery">
             <div className="product-gallery__thumbs">
               {images.map((image, index) => {
@@ -174,7 +167,6 @@ const ProductPage = () => {
             </div>
           </div>
 
-          {/* Product Specifications & Purchase Controls */}
           <section className="product-detail__content">
             <h1 className="product-detail__title">{product.name}</h1>
             <div className="product-detail__rating">
@@ -203,7 +195,6 @@ const ProductPage = () => {
                 "This product is crafted for everyday comfort, enduring quality, and effortless modern style."}
             </p>
 
-            {/* Sizes Selector */}
             <div className="product-detail__option">
               <span className="product-detail__option-label">Choose Size</span>
               {sizeWarning && (
@@ -232,7 +223,6 @@ const ProductPage = () => {
               </div>
             </div>
 
-            {/* Stepper & Add to Cart Action */}
             <div className="product-detail__purchase">
               <div className="product-detail__quantity" aria-label="Adjust product quantity">
                 <button
@@ -266,7 +256,6 @@ const ProductPage = () => {
           </section>
         </section>
 
-        {/* Customer Reviews Section */}
         <section className="product-reviews" aria-labelledby="reviews-heading">
           <div className="product-reviews__header">
             <h2 className="product-reviews__title" id="reviews-heading">

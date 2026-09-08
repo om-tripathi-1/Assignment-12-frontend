@@ -3,10 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import AuthForm from "../components/ui/AuthForm";
 import { useAuth } from "../contexts/AuthContext";
 
-/**
- * User registration page.
- * Creates an account and redirects user back to their intended destination.
- */
 const Register = () => {
   const navigate = useNavigate();
   const location = useLocation();
