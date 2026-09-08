@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import React from "react";
+import { Link, useParams } from "react-router-dom";
 
 const FilterSection = ({ title, children }) => (
   <section className="category-page__filter-section">
@@ -8,70 +9,92 @@ const FilterSection = ({ title, children }) => (
 );
 
 const CategoryFilters = ({
-  categories,
+  categories = [],
   filters,
-  isOpen,
+  isOpen = false,
   onChange,
   onApply,
   onClose,
-}) => (
-  <aside className={`category-page__filters${isOpen ? " is-open" : ""}`}>
-    <div className="category-page__filters-header">
-      <h2>Filters</h2>
-      <button type="button" onClick={onClose} aria-label="Close filters">
-        ×
-      </button>
-    </div>
-    <FilterSection title="Categories">
-      <div className="category-page__category-list">
-        {categories.map((category) => (
+}) => {
+  const { categoryName } = useParams();
+
+  return (
+    <aside className={`category-page__filters${isOpen ? " is-open" : ""}`} aria-label="Catalog filters">
+      <div className="category-page__filters-header">
+        <h2>Filters</h2>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close filters drawer"
+        >
+          ×
+        </button>
+      </div>
+
+      {/* Categories List */}
+      <FilterSection title="Categories">
+        <div className="category-page__category-list">
           <Link
-            key={category._id}
-            to={`/category/${category.name}`}
-            className="category-page__category-link"
+            to="/category"
+            className={`category-page__category-link ${!categoryName ? "active" : ""}`}
+            onClick={onClose}
           >
-            {category.name}
+            All Categories
             <span aria-hidden="true">›</span>
           </Link>
-        ))}
-      </div>
-    </FilterSection>
-    <FilterSection title="Price">
-      <div className="category-page__price-fields">
-        <label>
-          <span>From</span>
-          <input
-            name="minPrice"
-            type="number"
-            min="0"
-            value={filters.minPrice}
-            onChange={onChange}
-            placeholder="$0"
-          />
-        </label>
-        <label>
-          <span>To</span>
-          <input
-            name="maxPrice"
-            type="number"
-            min="0"
-            value={filters.maxPrice}
-            onChange={onChange}
-            placeholder="$500"
-          />
-        </label>
-      </div>
-    </FilterSection>
-    <FilterSection title="Availability">
-      <label className="category-page__checkbox">
-        <input type="checkbox" disabled />
-        <span>In stock</span>
-      </label>
-    </FilterSection>
-    <button className="category-page__apply" type="button" onClick={onApply}>
-      Apply filters
-    </button>
-  </aside>
-);
+          {categories.map((category) => {
+            const isSelected =
+              categoryName?.toLowerCase() === category.name?.toLowerCase();
+            return (
+              <Link
+                key={category._id}
+                to={`/category/${category.name}`}
+                className={`category-page__category-link ${isSelected ? "active" : ""}`}
+                onClick={onClose}
+              >
+                {category.name}
+                <span aria-hidden="true">›</span>
+              </Link>
+            );
+          })}
+        </div>
+      </FilterSection>
+
+      {/* Price Range Filter */}
+      <FilterSection title="Price">
+        <div className="category-page__price-fields">
+          <label>
+            <span>From</span>
+            <input
+              name="minPrice"
+              type="number"
+              min="0"
+              value={filters.minPrice}
+              onChange={onChange}
+              placeholder="$0"
+            />
+          </label>
+          <label>
+            <span>To</span>
+            <input
+              name="maxPrice"
+              type="number"
+              min="0"
+              value={filters.maxPrice}
+              onChange={onChange}
+              placeholder="$500"
+            />
+          </label>
+        </div>
+      </FilterSection>
+
+      {/* Apply Action */}
+      <button className="category-page__apply" type="button" onClick={onApply}>
+        Apply Filters
+      </button>
+    </aside>
+  );
+};
 
 export default CategoryFilters;
+

@@ -1,12 +1,19 @@
-import React from 'react'
+import React from "react";
 
-const AuthField = ({ label, name, type = "text", placeholder, value, onChange }) => {
+const AuthField = ({
+  label,
+  name,
+  type = "text",
+  placeholder = "",
+  value = "",
+  onChange,
+  required = true,
+}) => {
   return (
     <div className="login-page__field">
       <label className="login-label" htmlFor={name}>
         {label}
       </label>
-
       <input
         className="login-input"
         id={name}
@@ -15,7 +22,8 @@ const AuthField = ({ label, name, type = "text", placeholder, value, onChange })
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        required
+        required={required}
+        autoComplete={name === "password" ? "current-password" : name}
       />
     </div>
   );

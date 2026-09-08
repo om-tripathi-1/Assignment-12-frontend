@@ -11,16 +11,21 @@ import HomePage from "./pages/HomePage.jsx";
 import CartPage from "./pages/CartPage.jsx";
 import ProductPage from "./pages/ProductPage.jsx";
 import CategoryPage from "./pages/CategoryPage.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
+import { useAuth } from "./contexts/AuthContext.jsx";
 
 function App() {
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
+
   return (
     <>
-      <Announcement />
+      {!isAuthLoading && !isAuthenticated && <Announcement />}
       <NavBar />
       {/* <Hero /> */}
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/products/:productId" element={<ProductPage />} />
         <Route path="/category/:categoryName" element={<CategoryPage />} />

@@ -183,6 +183,11 @@ body {
   font-size: 0.7rem;
   line-height: 1;
 }
+.header__login-link {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: none;
+}
 
 @media (min-width: 1440px) {
   .header__container {
@@ -371,6 +376,83 @@ body {
 }
 .empty-state p {
   font-size: 0.9rem;
+}
+
+.checkout-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.55);
+}
+.checkout-modal__dialog {
+  width: min(100%, 32rem);
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  padding: 1.25rem;
+  background: white;
+  border-radius: 1.25rem;
+}
+.checkout-modal__header, .checkout-modal__item, .checkout-modal__total, .checkout-modal__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.checkout-modal__eyebrow {
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+.checkout-modal h2 {
+  font-family: "Integral CF";
+  font-size: 1.5rem;
+}
+.checkout-modal__close {
+  border: 0;
+  background: transparent;
+  font-size: 1.6rem;
+}
+.checkout-modal__items {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+  padding: 1rem 0;
+  border-top: 1px solid rgba(47, 47, 47, 0.125);
+  border-bottom: 1px solid rgba(47, 47, 47, 0.125);
+}
+.checkout-modal__item {
+  font-size: 0.9rem;
+}
+.checkout-modal__total {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.checkout-modal__error {
+  margin-top: 1rem;
+  color: #d6455f;
+  font-size: 0.85rem;
+}
+.checkout-modal__actions {
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+.checkout-modal__actions button {
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+.checkout-modal__cancel {
+  border: 1px solid rgba(47, 47, 47, 0.125);
+  background: white;
+}
+.checkout-modal__confirm {
+  border: 1px solid black;
+  background: black;
+  color: white;
 }
 
 .hero {
@@ -637,8 +719,15 @@ body {
   display: flex;
   gap: 1rem;
 }
-.new-arrivals__product-card .text-area .rating .product-rating {
+.new-arrivals__product-card .text-area .rating .review-card__stars {
   display: flex;
+}
+.new-arrivals__product-card .text-area .rating .review-card__star {
+  width: 1rem;
+  height: 1rem;
+}
+.new-arrivals__product-card .text-area .rating .review-card__star--half {
+  width: 0.5rem;
 }
 .new-arrivals__product-card .text-area .price-row {
   display: flex;
@@ -739,9 +828,17 @@ body {
 .top-selling__product-card .text-area .rating {
   margin: 5px;
   display: flex;
+  gap: 1rem;
 }
-.top-selling__product-card .text-area .rating .product-rating {
+.top-selling__product-card .text-area .rating .review-card__stars {
   display: flex;
+}
+.top-selling__product-card .text-area .rating .review-card__star {
+  width: 1rem;
+  height: 1rem;
+}
+.top-selling__product-card .text-area .rating .review-card__star--half {
+  width: 0.5rem;
 }
 .top-selling__product-card .text-area .price-row {
   display: flex;
@@ -1842,5 +1939,122 @@ body {
   }
   .category-page__product-card .price {
     font-size: 1.1rem;
+  }
+}
+
+.profile-page {
+  max-width: 75rem;
+  margin: 0 auto;
+  padding: 0 1rem 5rem;
+}
+.profile-page__state {
+  padding: 4rem 1rem;
+  text-align: center;
+}
+.profile-page__header, .profile-page__section-heading, .profile-page__order-heading, .profile-page__order-items div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.profile-page__header {
+  margin-bottom: 1.5rem;
+}
+.profile-page__eyebrow {
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+.profile-page h1 {
+  font-family: "Integral CF";
+  font-size: 2rem;
+  text-transform: uppercase;
+}
+.profile-page h2 {
+  font-size: 1.2rem;
+}
+.profile-page__logout {
+  border: 1px solid black;
+  border-radius: 999px;
+  background: white;
+  padding: 0.7rem 1rem;
+  font-weight: 600;
+}
+.profile-page__details, .profile-page__orders {
+  border: 1px solid rgba(47, 47, 47, 0.125);
+  border-radius: 1.25rem;
+  padding: 1rem;
+  background: white;
+}
+.profile-page__details {
+  margin-bottom: 1rem;
+}
+.profile-page dl {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+.profile-page dl div {
+  display: grid;
+  gap: 0.2rem;
+}
+.profile-page dt {
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 0.75rem;
+}
+.profile-page dd {
+  font-size: 0.95rem;
+}
+.profile-page__section-heading span {
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 0.8rem;
+}
+.profile-page__order-list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.profile-page__order {
+  position: relative;
+  display: grid;
+  gap: 0.8rem;
+  padding: 1rem;
+  border: 1px solid rgba(47, 47, 47, 0.125);
+  border-radius: 0.8rem;
+}
+.profile-page__order-heading {
+  font-size: 0.85rem;
+}
+.profile-page__order-heading span {
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 0.75rem;
+}
+.profile-page__order-items {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+}
+.profile-page__status {
+  justify-self: start;
+  border-radius: 999px;
+  padding: 0.25rem 0.55rem;
+  background: #f4f4f4;
+  font-size: 0.7rem;
+  text-transform: capitalize;
+}
+.profile-page__status--delivered {
+  background: #dff3e4;
+  color: #287a3d;
+}
+.profile-page__status--cancelled {
+  background: #f7dfe2;
+  color: #d6455f;
+}
+@media (min-width: 1440px) {
+  .profile-page__details {
+    max-width: 32rem;
+  }
+  .profile-page__details dl {
+    grid-template-columns: repeat(3, 1fr);
   }
 }/*# sourceMappingURL=style.css.map */

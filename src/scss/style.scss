@@ -8,8 +8,9 @@
 @use "layout/footer";
 @use "layout/breadcurmb";
 @use "components/empty-state";
+@use "components/checkout-modal";
 
-@use"sections/hero";
+@use "sections/hero";
 @use "sections/brands";
 @use "sections/newArrivals";
 @use "sections/topSelling";
@@ -20,3 +21,4 @@
 @use "sections/login";
 @use "sections/product-detail";
 @use "sections/category-page";
+@use "sections/profile";

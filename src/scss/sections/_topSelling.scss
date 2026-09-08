@@ -53,9 +53,10 @@
             .rating{
                 margin: 5px;
                 display: flex;
-                .product-rating{
-                    display: flex;
-                }
+                gap: 1rem;
+                .review-card__stars{display: flex;}
+                .review-card__star{width: 1rem; height: 1rem;}
+                .review-card__star--half{width: 0.5rem;}
             }
             .price-row {
                 display: flex;

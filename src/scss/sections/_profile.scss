@@ -1,0 +1,61 @@
+@use "../abstracts/mixins" as *;
+@use "../abstracts/variables" as *;
+
+.profile-page {
+  max-width: 75rem;
+  margin: 0 auto;
+  padding: 0 1rem 5rem;
+
+  &__state { padding: 4rem 1rem; text-align: center; }
+
+  &__header,
+  &__section-heading,
+  &__order-heading,
+  &__order-items div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  &__header { margin-bottom: 1.5rem; }
+  &__eyebrow { color: $black-50; font-size: 0.75rem; text-transform: uppercase; }
+  h1 { font-family: $heading-font-style; font-size: 2rem; text-transform: uppercase; }
+  h2 { font-size: 1.2rem; }
+
+  &__logout {
+    border: 1px solid $black-1;
+    border-radius: 999px;
+    background: $white-1;
+    padding: 0.7rem 1rem;
+    font-weight: 600;
+  }
+
+  &__details,
+  &__orders {
+    border: 1px solid $border-color;
+    border-radius: 1.25rem;
+    padding: 1rem;
+    background: $white-1;
+  }
+
+  &__details { margin-bottom: 1rem; }
+  dl { display: grid; gap: 0.85rem; margin-top: 1rem; }
+  dl div { display: grid; gap: 0.2rem; }
+  dt { color: $black-50; font-size: 0.75rem; }
+  dd { font-size: 0.95rem; }
+  &__section-heading span { color: $black-50; font-size: 0.8rem; }
+  &__order-list { display: grid; gap: 0.75rem; margin-top: 1rem; }
+  &__order { position: relative; display: grid; gap: 0.8rem; padding: 1rem; border: 1px solid $border-color; border-radius: 0.8rem; }
+  &__order-heading { font-size: 0.85rem; }
+  &__order-heading span { color: $black-50; font-size: 0.75rem; }
+  &__order-items { display: grid; gap: 0.4rem; font-size: 0.8rem; }
+  &__status { justify-self: start; border-radius: 999px; padding: 0.25rem 0.55rem; background: $white-2; font-size: 0.7rem; text-transform: capitalize; }
+  &__status--delivered { background: #dff3e4; color: #287a3d; }
+  &__status--cancelled { background: #f7dfe2; color: $discount-color; }
+
+  @include respond-to(desktop) {
+    &__details { max-width: 32rem; }
+    &__details dl { grid-template-columns: repeat(3, 1fr); }
+  }
+}

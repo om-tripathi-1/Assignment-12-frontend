@@ -1,13 +1,28 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useMemo, useState } from "react";
 import Breadcrumb from "../components/ui/Breadcrumb";
 import EmptyState from "../components/ui/EmptyState";
-import { getCartItems, removeCartItem, updateCartItem } from "../api/cart.service";
-const formatPrice = (value) => `$${value.toFixed(0)}`;
+import CheckoutModal from "../components/ui/CheckoutModal";
+import { createOrder } from "../api/order.service";
+import { useCart } from "../contexts/CartContext";
 
+const formatPrice = (value) => `$${Number(value || 0).toFixed(0)}`;
+
+/**
+ * Single line item in the shopping cart.
+ */
 const CartItem = ({ item, onQuantityChange, onRemove }) => (
   <article className="cart-page__item">
-    <div className="cart-page__image-box"><img className="image-box-img" src={item.image} alt={item.name} /></div>
+    <div className="cart-page__image-box">
+      <img
+        className="image-box-img"
+        src={item.image}
+        alt={item.name}
+        onError={(e) => {
+          e.currentTarget.onerror = null;
+          e.currentTarget.src = "/assets/images/placeholder.png";
+        }}
+      />
+    </div>
     <div className="cart-page__details">
       <div className="cart-page__meta">
         <div>
@@ -15,88 +30,264 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => (
           <p className="item-size">Size: {item.size}</p>
           <p className="item-size">Color: {item.color}</p>
         </div>
-        <button className="cart-page__remove" type="button" onClick={() => onRemove(item.id)} aria-label={`Remove ${item.name}`}>×</button>
+        <button
+          className="cart-page__remove"
+          type="button"
+          onClick={() => onRemove(item.id)}
+          aria-label={`Remove ${item.name} from cart`}
+        >
+          ×
+        </button>
       </div>
       <div className="cart-page__bottom-row">
         <div className="cart-page__price-wrap">
           <strong className="cart-page__price">{formatPrice(item.price)}</strong>
-          {item.oldPrice && <span className="cart-page__old-price">{formatPrice(item.oldPrice)}</span>}
+          {item.oldPrice && (
+            <span className="cart-page__old-price">
+              {formatPrice(item.oldPrice)}
+            </span>
+          )}
         </div>
-        <div className="cart-page__qty-box" aria-label={`Quantity for ${item.name}`}>
-          <button className="qty-btn" type="button" onClick={() => onQuantityChange(item.id, -1)} aria-label="Decrease quantity">−</button>
+        <div
+          className="cart-page__qty-box"
+          aria-label={`Quantity for ${item.name}`}
+        >
+          <button
+            className="qty-btn"
+            type="button"
+            onClick={() => onQuantityChange(item.id, -1)}
+            aria-label="Decrease quantity"
+          >
+            −
+          </button>
           <span className="qty-no">{item.quantity}</span>
-          <button className="qty-btn" type="button" onClick={() => onQuantityChange(item.id, 1)} aria-label="Increase quantity">+</button>
+          <button
+            className="qty-btn"
+            type="button"
+            onClick={() => onQuantityChange(item.id, 1)}
+            aria-label="Increase quantity"
+          >
+            +
+          </button>
         </div>
       </div>
     </div>
   </article>
 );
 
+/**
+ * Shopping bag review and checkout page.
+ */
 const CartPage = () => {
-  const [items, setItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { items, isLoading, updateItem, removeItem, clearCart } = useCart();
+
   const [promoCode, setPromoCode] = useState("");
+  const [promoMessage, setPromoMessage] = useState("");
   const [discountRate, setDiscountRate] = useState(0);
-  const subtotal = useMemo(() => items.reduce((total, item) => total + item.price * item.quantity, 0), [items]);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
+
+  // Subtotal calculation derived from current item quantities and prices
+  const subtotal = useMemo(
+    () =>
+      items.reduce(
+        (total, item) => total + (item.price || 0) * (item.quantity || 1),
+        0
+      ),
+    [items]
+  );
+
   const discount = subtotal * discountRate;
   const deliveryFee = items.length ? 15 : 0;
-  const total = subtotal - discount + deliveryFee;
+  const total = Math.max(0, subtotal - discount + deliveryFee);
 
-  useEffect(() => {
-    getCartItems()
-      .then(setItems)
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  const updateQuantity = (id, change) => {
+  const handleQuantityChange = (id, change) => {
     const item = items.find((cartItem) => cartItem.id === id);
     if (!item) return;
-    if (item.quantity + change < 1) {
-      removeCartItem(id).then(setItems);
-      return;
+
+    const newQuantity = item.quantity + change;
+    if (newQuantity < 1) {
+      removeItem(id);
+    } else {
+      updateItem(id, newQuantity);
     }
-    updateCartItem(id, item.quantity + change).then(setItems);
   };
 
-  const applyPromo = () => {
+  const handleApplyPromo = () => {
     const code = promoCode.trim().toUpperCase();
-    setDiscountRate(code === "SAVE20" ? 0.2 : code === "SAVE10" ? 0.1 : 0);
+    if (code === "SAVE20") {
+      setDiscountRate(0.2);
+      setPromoMessage("✓ SAVE20 applied (20% discount)!");
+    } else if (code === "SAVE10") {
+      setDiscountRate(0.1);
+      setPromoMessage("✓ SAVE10 applied (10% discount)!");
+    } else if (code === "") {
+      setDiscountRate(0);
+      setPromoMessage("");
+    } else {
+      setDiscountRate(0);
+      setPromoMessage("Invalid promo code. Try SAVE10 or SAVE20.");
+    }
+  };
+
+  const openCheckout = () => {
+    setCheckoutError("");
+    setIsCheckoutOpen(true);
+  };
+
+  const handlePlaceOrder = async () => {
+    try {
+      setIsSubmittingOrder(true);
+      setCheckoutError("");
+      await createOrder(items);
+      clearCart();
+      setIsCheckoutOpen(false);
+    } catch (error) {
+      console.error("Order submission failed:", error);
+      setCheckoutError(
+        error.response?.data?.message ||
+          "Unable to place your order. Please verify your details and try again."
+      );
+    } finally {
+      setIsSubmittingOrder(false);
+    }
   };
 
   return (
     <>
-      <Breadcrumb items={[{ label: "Home", to: "/" }, { label: "Cart" }]} />
+      <Breadcrumb
+        items={[
+          { label: "Home", to: "/" },
+          { label: "Cart" },
+        ]}
+      />
+
       <main className="cart-page">
         <div className="cart-page__container">
-          <section className="cart-page__summary">
-            <div className="cart-page__header"><h1 className="heading">Your Cart</h1></div>
-            {isLoading ? <p>Loading cart...</p> : items.length ? (
+          {/* Cart Items List */}
+          <section className="cart-page__summary" aria-labelledby="cart-heading">
+            <div className="cart-page__header">
+              <h1 id="cart-heading" className="heading">
+                Your Cart
+              </h1>
+            </div>
+
+            {isLoading ? (
+              <p style={{ padding: "2rem 0", color: "#666" }}>Loading your cart...</p>
+            ) : items.length ? (
               <div className="cart-page__items">
-                {items.map((item) => <CartItem key={item.id} item={item} onQuantityChange={updateQuantity} onRemove={(id) => removeCartItem(id).then(setItems)} />)}
+                {items.map((item) => (
+                  <CartItem
+                    key={item.id}
+                    item={item}
+                    onQuantityChange={handleQuantityChange}
+                    onRemove={removeItem}
+                  />
+                ))}
               </div>
             ) : (
-              <EmptyState title="Your cart is empty." description="Add something from the shop and it will appear here." />
+              <EmptyState
+                title="Your cart is currently empty."
+                description="Explore our collection to find clothes matching your style."
+              />
             )}
           </section>
-          <aside className="cart-page__checkout">
-            <h2 className="checkout-heading">Order Summary</h2>
-            <div className="cart-page__summary-row"><span>Subtotal</span><strong>{formatPrice(subtotal)}</strong></div>
-            <div className="cart-page__summary-row discount"><span>Discount</span><strong>-{formatPrice(discount)}</strong></div>
-            <div className="cart-page__summary-row"><span>Delivery Fee</span><strong>{formatPrice(deliveryFee)}</strong></div>
-            <div className="cart-page__summary-row total"><span>Total</span><strong>{formatPrice(total)}</strong></div>
+
+          {/* Order Financials & Checkout Callout */}
+          <aside className="cart-page__checkout" aria-labelledby="order-summary-title">
+            <h2 id="order-summary-title" className="checkout-heading">
+              Order Summary
+            </h2>
+            <div className="cart-page__summary-row">
+              <span>Subtotal</span>
+              <strong>{formatPrice(subtotal)}</strong>
+            </div>
+
+            {discount > 0 && (
+              <div className="cart-page__summary-row discount">
+                <span>Discount ({(discountRate * 100).toFixed(0)}%)</span>
+                <strong>-{formatPrice(discount)}</strong>
+              </div>
+            )}
+
+            <div className="cart-page__summary-row">
+              <span>Delivery Fee</span>
+              <strong>{items.length ? formatPrice(deliveryFee) : "$0"}</strong>
+            </div>
+
+            <div className="cart-page__summary-row total">
+              <span>Total</span>
+              <strong>{formatPrice(total)}</strong>
+            </div>
+
+            {/* Promo Code Entry */}
             <div className="cart-page__promo">
               <div className="cart-page__promo-box">
-                <input id="promoCode" className="promo-input" type="text" value={promoCode} onChange={(event) => setPromoCode(event.target.value)} placeholder="Enter code" />
-                <button type="button" className="promo-button" onClick={applyPromo}>Apply</button>
+                <input
+                  id="promoCode"
+                  className="promo-input"
+                  type="text"
+                  value={promoCode}
+                  onChange={(event) => {
+                    setPromoCode(event.target.value);
+                    if (promoMessage) setPromoMessage("");
+                  }}
+                  placeholder="Enter promo code"
+                  aria-label="Enter promotional discount code"
+                />
+                <button
+                  type="button"
+                  className="promo-button"
+                  onClick={handleApplyPromo}
+                >
+                  Apply
+                </button>
               </div>
-              <div className="cart-page__promo-list"><span>SAVE10 → 10% Discount</span><span>SAVE20 → 20% Discount</span></div>
+
+              {promoMessage && (
+                <p
+                  style={{
+                    fontSize: "0.75rem",
+                    margin: "0.4rem 0 0",
+                    color: promoMessage.startsWith("✓") ? "#10b981" : "#ef4444",
+                  }}
+                >
+                  {promoMessage}
+                </p>
+              )}
+
+              <div className="cart-page__promo-list">
+                <span>SAVE10 → 10% Discount</span>
+                <span>SAVE20 → 20% Discount</span>
+              </div>
             </div>
-            <Link className="cart-page__checkout-btn" to="/checkout">Go to Checkout →</Link>
+
+            <button
+              className="cart-page__checkout-btn"
+              type="button"
+              onClick={openCheckout}
+              disabled={!items.length || isLoading}
+            >
+              Go to Checkout →
+            </button>
           </aside>
         </div>
       </main>
+
+      {/* Checkout Modal Dialog */}
+      {isCheckoutOpen && (
+        <CheckoutModal
+          items={items}
+          total={total}
+          isSubmitting={isSubmittingOrder}
+          error={checkoutError}
+          onClose={() => setIsCheckoutOpen(false)}
+          onConfirm={handlePlaceOrder}
+        />
+      )}
     </>
   );
 };
 
-export default CartPage;
+export default CartPage;

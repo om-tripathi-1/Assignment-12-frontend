@@ -1,78 +1,99 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AuthForm from "../components/ui/AuthForm";
-import { registerUser } from "../api/auth.service.js";
+import { useAuth } from "../contexts/AuthContext";
 
+/**
+ * User registration page.
+ * Creates an account and redirects user back to their intended destination.
+ */
 const Register = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { register } = useAuth();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
-
   const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fields = [
     {
       name: "name",
-      label: "Name",
+      label: "Full Name",
       type: "text",
-      placeholder: "Enter your name",
+      placeholder: "e.g. Alex Johnson",
     },
     {
       name: "email",
-      label: "Email",
+      label: "Email Address",
       type: "email",
-      placeholder: "Enter your email",
+      placeholder: "yourname@gmail.com",
     },
     {
       name: "password",
       label: "Password",
       type: "password",
-      placeholder: "Enter your password",
+      placeholder: "Create a secure password",
     },
   ];
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    if (message) setMessage("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage("");
 
-    console.log(formData);
+    if (!formData.name.trim() || !formData.email.trim() || !formData.password) {
+      setMessage("Please complete all registration fields.");
+      return;
+    }
 
-    await registerUser(formData)
-      .then((response) => {
-        console.log("Registration successful:", response);
-        setMessage("Registration successful!");
-        navigate(location.state?.from || "/");
-      })
-      .catch((error) => {
-        console.error("Error registering:", error);
-        setMessage("Registration failed. Please try again.");
-      });
+    if (!formData.email.endsWith("@gmail.com")) {
+      setMessage("Please register with a @gmail.com email address.");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      await register(formData);
+      navigate(location.state?.from || "/");
+    } catch (error) {
+      console.error("Registration failed:", error);
+      setMessage(
+        error.response?.data?.message ||
+          "Registration could not be completed. Please verify your details."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <AuthForm
-      title="Register"
+      title="Create an Account"
       fields={fields}
       formData={formData}
       onChange={handleChange}
       onSubmit={handleSubmit}
-      buttonText="Register"
+      buttonText={isSubmitting ? "Creating Account..." : "Register"}
       message={message}
       redirectText="Already have an account?"
       redirectLink="/login"
-      redirectLabel="Login now"
+      redirectLabel="Log in here"
     />
   );
 };
 
 export default Register;
+

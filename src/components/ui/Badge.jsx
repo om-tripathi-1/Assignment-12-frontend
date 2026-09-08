@@ -1,9 +1,8 @@
-import React from 'react'
+import React from "react";
 
-const Badge = ({text}) => {
-  return (
-    <span className="price__discount">{text}</span>
-  )
-}
+const Badge = ({ text, className = "price__discount" }) => {
+  if (!text) return null;
+  return <span className={className}>{text}</span>;
+};
 
-export default Badge
+export default Badge;

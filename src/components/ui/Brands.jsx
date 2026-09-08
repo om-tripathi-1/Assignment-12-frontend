@@ -1,42 +1,35 @@
-import React from 'react'
-import versaceLogo from '../../assets/icons/versace.svg'
-import zaraLogo from '../../assets/icons/zara-logo-1 1.svg'
-import gucciLogo from '../../assets/icons/gucci-logo-1 1.svg'
-import pradaLogo from '../../assets/icons/prada-logo-1 1.svg'
-import ckLogo from '../../assets/icons/ck.svg'
+import React from "react";
+
+import versaceLogo from "../../assets/icons/versace.svg";
+import zaraLogo from "../../assets/icons/zara-logo-1 1.svg";
+import gucciLogo from "../../assets/icons/gucci-logo-1 1.svg";
+import pradaLogo from "../../assets/icons/prada-logo-1 1.svg";
+import ckLogo from "../../assets/icons/ck.svg";
+
+const partnerBrands = [
+  { name: "Versace", logo: versaceLogo },
+  { name: "Zara", logo: zaraLogo },
+  { name: "Gucci", logo: gucciLogo },
+  { name: "Prada", logo: pradaLogo },
+  { name: "Calvin Klein", logo: ckLogo },
+];
 
 const Brands = () => {
   return (
-    <section className="brands" id="brands">
+    <section className="brands" id="brands" aria-label="Featured partner brands">
       <div className="brands__container">
-        <img
-          src={versaceLogo}
-          alt="versace brand logo"
-          className="brands__icons"
-        />
-        <img
-          src={zaraLogo}
-          alt="zara brand logo"
-          className="brands__icons"
-        />
-        <img
-          src={gucciLogo}
-          alt="gucci brand logo"
-          className="brands__icons"
-        />
-        <img
-          src={pradaLogo}
-          alt="prada brand logo"
-          className="brands__icons"
-        />
-        <img
-          src={ckLogo}
-          alt="CK brand logo"
-          className="brands__icons"
-        />
+        {partnerBrands.map((brand) => (
+          <img
+            key={brand.name}
+            src={brand.logo}
+            alt={`${brand.name} logo`}
+            className="brands__icons"
+            loading="lazy"
+          />
+        ))}
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Brands
+export default Brands;

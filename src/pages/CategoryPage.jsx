@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import Breadcrumb from "../components/ui/Breadcrumb";
 import CategoryFilters from "../components/ui/CategoryFilters";
 import CategoryHeader from "../components/ui/CategoryHeader";
@@ -10,9 +10,17 @@ import { getAllProducts, getProductImageUrl } from "../api/product.service";
 
 const initialFilters = { minPrice: "", maxPrice: "", sort: "newest" };
 
+/**
+ * Catalog browsing page supporting category filtering, keyword searching,
+ * price boundaries, sort ordering, and pagination.
+ */
 const CategoryPage = () => {
   const { categoryName } = useParams();
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("search") || "";
+
   const [categories, setCategories] = useState([]);
+  const [areCategoriesLoading, setAreCategoriesLoading] = useState(true);
   const [products, setProducts] = useState([]);
   const [filters, setFilters] = useState(initialFilters);
   const [appliedFilters, setAppliedFilters] = useState(initialFilters);
@@ -23,54 +31,115 @@ const CategoryPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
+  // Find matching category ID from category route param
   const selectedCategory = categories.find(
-    (category) => category.name.toLowerCase() === (categoryName || "").toLowerCase(),
+    (category) =>
+      category.name?.toLowerCase() === (categoryName || "").toLowerCase()
   );
-  const pageTitle = selectedCategory?.name || categoryName || "Shop";
+  const selectedCategoryId = selectedCategory?._id;
 
+  // Determine dynamic page title
+  const pageTitle = searchQuery
+    ? `Search: "${searchQuery}"`
+    : selectedCategory?.name || categoryName || "All Products";
+
+  // Fetch available categories once on mount
   useEffect(() => {
+    let isCurrent = true;
+
     const loadCategories = async () => {
       try {
         const response = await getAllCategories();
-        setCategories(response.categories || []);
-      } catch {
-        setCategories([]);
+        if (isCurrent) {
+          setCategories(response.categories || []);
+        }
+      } catch (error) {
+        console.error("Could not load categories:", error);
+        if (isCurrent) setCategories([]);
+      } finally {
+        if (isCurrent) setAreCategoriesLoading(false);
       }
     };
 
     loadCategories();
+
+    return () => {
+      isCurrent = false;
+    };
   }, []);
 
+  // Fetch products matching category, search term, filters, and page index
   useEffect(() => {
+    let isCurrent = true;
+
     const loadProducts = async () => {
+      if (areCategoriesLoading) return;
+
+      // If category name was provided in URL but didn't match any category
+      if (categoryName && !selectedCategoryId) {
+        setProducts([]);
+        setTotalPages(1);
+        setTotalProducts(0);
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
       setHasError(false);
 
       const productParams = {
-        ...(selectedCategory?._id && { category: selectedCategory._id }),
         page: currentPage,
         limit: 9,
         sort: appliedFilters.sort,
       };
 
-      if (appliedFilters.minPrice) productParams.minPrice = appliedFilters.minPrice;
-      if (appliedFilters.maxPrice) productParams.maxPrice = appliedFilters.maxPrice;
+      if (selectedCategoryId) {
+        productParams.category = selectedCategoryId;
+      }
+
+      if (searchQuery) {
+        productParams.search = searchQuery;
+      }
+
+      if (appliedFilters.minPrice) {
+        productParams.minPrice = appliedFilters.minPrice;
+      }
+
+      if (appliedFilters.maxPrice) {
+        productParams.maxPrice = appliedFilters.maxPrice;
+      }
 
       try {
         const response = await getAllProducts(productParams);
-        setProducts(response.products || []);
-        setTotalPages(response.totalPages || 1);
-        setTotalProducts(response.totalProducts || 0);
-      } catch {
-        setHasError(true);
-        setProducts([]);
+        if (isCurrent) {
+          setProducts(response.products || []);
+          setTotalPages(response.totalPages || 1);
+          setTotalProducts(response.totalProducts || 0);
+        }
+      } catch (error) {
+        console.error("Error fetching catalog products:", error);
+        if (isCurrent) {
+          setHasError(true);
+          setProducts([]);
+        }
       } finally {
-        setIsLoading(false);
+        if (isCurrent) setIsLoading(false);
       }
     };
 
     loadProducts();
-  }, [selectedCategory?._id, appliedFilters, currentPage]);
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [
+    areCategoriesLoading,
+    categoryName,
+    selectedCategoryId,
+    searchQuery,
+    appliedFilters,
+    currentPage,
+  ]);
 
   const updateFilter = (event) => {
     const { name, value } = event.target;
@@ -85,22 +154,37 @@ const CategoryPage = () => {
 
   const getImageSource = (product) => {
     const image = product.images?.[0];
-    const imagePath = typeof image === "string" ? image : image?.path || image?.url;
+    const imagePath =
+      typeof image === "string" ? image : image?.path || image?.url;
     return getProductImageUrl(imagePath);
   };
 
   return (
     <>
-      <Breadcrumb items={[{ label: "Home", to: "/" }, { label: pageTitle }]} />
+      <Breadcrumb
+        items={[
+          { label: "Home", to: "/" },
+          { label: "Shop", to: "/category" },
+          ...(categoryName ? [{ label: selectedCategory?.name || categoryName }] : []),
+        ]}
+      />
+
       <main className="category-page">
         <CategoryHeader
           title={pageTitle}
           totalProducts={totalProducts}
           filters={filters}
-          onFilterChange={updateFilter}
+          onFilterChange={(e) => {
+            updateFilter(e);
+            // Auto apply sort changes
+            if (e.target.name === "sort") {
+              setAppliedFilters((prev) => ({ ...prev, sort: e.target.value }));
+            }
+          }}
           onFilterToggle={() => setIsFilterOpen((isOpen) => !isOpen)}
           isFilterOpen={isFilterOpen}
         />
+
         <div className="category-page__layout">
           <CategoryFilters
             categories={categories}
@@ -110,6 +194,7 @@ const CategoryPage = () => {
             onApply={applyFilters}
             onClose={() => setIsFilterOpen(false)}
           />
+
           <CategoryProductGrid
             products={products}
             isLoading={isLoading}
@@ -117,15 +202,19 @@ const CategoryPage = () => {
             getImageSource={getImageSource}
           />
         </div>
-        <CategoryPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPrevious={() => setCurrentPage((page) => page - 1)}
-          onNext={() => setCurrentPage((page) => page + 1)}
-        />
+
+        {totalPages > 1 && (
+          <CategoryPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPrevious={() => setCurrentPage((page) => Math.max(1, page - 1))}
+            onNext={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+          />
+        )}
       </main>
     </>
   );
 };
 
 export default CategoryPage;
+

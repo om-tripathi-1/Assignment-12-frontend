@@ -1,74 +1,88 @@
-import React from 'react'
-import logo from '../../assets/icons/Logo-vector.svg'
-import socialIcon1 from '../../assets/icons/1.svg'
-import socialIcon2 from '../../assets/icons/2.svg'
-import socialIcon3 from '../../assets/icons/3.svg'
-import socialIcon4 from '../../assets/icons/4.svg'
-import badge1 from '../../assets/icons/Badge.svg'
-import badge2 from '../../assets/icons/Badge-1.svg'
-import badge3 from '../../assets/icons/Badge-2.svg'
-import badge4 from '../../assets/icons/Badge-3.svg'
-import badge5 from '../../assets/icons/Badge-4.svg'
+import { Link } from "react-router-dom";
+import logo from "../../assets/icons/Logo-vector.svg";
+import twitterIcon from "../../assets/icons/1.svg";
+import facebookIcon from "../../assets/icons/2.svg";
+import instagramIcon from "../../assets/icons/3.svg";
+import githubIcon from "../../assets/icons/4.svg";
+import visaBadge from "../../assets/icons/Badge.svg";
+import mastercardBadge from "../../assets/icons/Badge-1.svg";
+import paypalBadge from "../../assets/icons/Badge-2.svg";
+import applePayBadge from "../../assets/icons/Badge-3.svg";
+import googlePayBadge from "../../assets/icons/Badge-4.svg";
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="footer">
       <div className="footer__top">
         <div className="footer__socials">
-          <img src={logo} alt="company logo" className="footer__logo" />
+          <Link to="/" aria-label="Go to homepage">
+            <img src={logo} alt="Shop.co Logo" className="footer__logo" />
+          </Link>
           <p className="footer-text">
-            We have clothes that suits your style and which you’re proud to wear. From women to men.
+            We offer clothes tailored to your distinctive style, crafted with materials you'll be proud to wear every day.
           </p>
-          <div className="social-icons">
-            <a href=""><img src={socialIcon1} alt="" /></a>
-            <a href=""><img src={socialIcon2} alt="" /></a>
-            <a href=""><img src={socialIcon3} alt="" /></a>
-            <a href=""><img src={socialIcon4} alt="" /></a>
+          <div className="social-icons" aria-label="Social media links">
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+              <img src={twitterIcon} alt="Twitter" />
+            </a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <img src={facebookIcon} alt="Facebook" />
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <img src={instagramIcon} alt="Instagram" />
+            </a>
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+              <img src={githubIcon} alt="GitHub" />
+            </a>
           </div>
         </div>
-        <div className="footer__links">
+
+        <nav className="footer__links" aria-label="Footer navigation">
           <div className="link-div">
             <h5>COMPANY</h5>
-            <a href="">About</a>
-            <a href="">Features</a>
-            <a href="">Work</a>
-            <a href="">Career</a>
+            <Link to="/about">About</Link>
+            <Link to="/features">Features</Link>
+            <Link to="/work">Works</Link>
+            <Link to="/career">Careers</Link>
           </div>
           <div className="link-div">
             <h5>HELP</h5>
-            <a href="">Customer Support</a>
-            <a href="">Delivery Details</a>
-            <a href="">Terms & Conditions</a>
-            <a href="">Privacy Policy</a>
+            <Link to="/support">Customer Support</Link>
+            <Link to="/delivery">Delivery Details</Link>
+            <Link to="/terms">Terms & Conditions</Link>
+            <Link to="/privacy">Privacy Policy</Link>
           </div>
           <div className="link-div">
             <h5>FAQ</h5>
-            <a href="">Account</a>
-            <a href="">Manage Deliveries</a>
-            <a href="">Orders</a>
-            <a href="">Payments</a>
+            <Link to="/profile">Account</Link>
+            <Link to="/profile">Manage Deliveries</Link>
+            <Link to="/profile">Orders</Link>
+            <Link to="/payments">Payments</Link>
           </div>
           <div className="link-div">
-            <h5>Resources</h5>
-            <a href="">Free eBook</a>
-            <a href="">Development Tutorial</a>
-            <a href="">How to - Blog</a>
-            <a href="">Youtube Playlist</a>
+            <h5>RESOURCES</h5>
+            <a href="#resources">Free eBook</a>
+            <a href="#resources">Development Tutorial</a>
+            <a href="#resources">How-to Blog</a>
+            <a href="#resources">YouTube Playlist</a>
           </div>
-        </div>
+        </nav>
       </div>
+
       <div className="footer__bottom">
-        <p className="text-bottom">Shop.co © 2000-2023, All Rights Reserved</p>
-        <div className="payment-icons">
-          <img src={badge1} alt="" />
-          <img src={badge2} alt="" />
-          <img src={badge3} alt="" />
-          <img src={badge4} alt="" />
-          <img src={badge5} alt="" />
+        <p className="text-bottom">Shop.co © 2000-{currentYear}, All Rights Reserved</p>
+        <div className="payment-icons" aria-label="Payment methods accepted">
+          <img src={visaBadge} alt="Visa" />
+          <img src={mastercardBadge} alt="Mastercard" />
+          <img src={paypalBadge} alt="PayPal" />
+          <img src={applePayBadge} alt="Apple Pay" />
+          <img src={googlePayBadge} alt="Google Pay" />
         </div>
       </div>
     </footer>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

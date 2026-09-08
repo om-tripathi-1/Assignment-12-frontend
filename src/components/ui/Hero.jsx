@@ -1,8 +1,10 @@
-import React from 'react'
-import Button from './Button.jsx'
-import diamondVector from '../../assets/icons/diamond-vector.svg'
+import { useNavigate } from "react-router-dom";
+import Button from "./Button.jsx";
+import diamondVector from "../../assets/icons/diamond-vector.svg";
 
 const Hero = () => {
+  const navigate = useNavigate();
+
   return (
     <section className="hero">
       <div className="hero__text">
@@ -12,7 +14,11 @@ const Hero = () => {
           designed to bring out your individuality and cater to your sense of
           style.
         </p>
-        <Button className="hero__button" text="Shop Now" />
+        <Button
+          className="hero__button"
+          text="Shop Now"
+          onClick={() => navigate("/category")}
+        />
         <div className="hero__stats-grid">
           <div className="hero__stat-box first-stat-box">
             <h4 className="text-stat">200+</h4>
@@ -30,7 +36,7 @@ const Hero = () => {
           </div>
         </div>
       </div>
-      <div className="hero__bg">
+      <div className="hero__bg" aria-hidden="true">
         <img
           src={diamondVector}
           alt=""
@@ -43,7 +49,7 @@ const Hero = () => {
         />
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Hero
+export default Hero;

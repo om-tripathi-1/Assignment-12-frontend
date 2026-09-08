@@ -1,0 +1,95 @@
+@use "../abstracts/mixins" as *;
+@use "../abstracts/variables" as *;
+
+.checkout-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.55);
+
+  &__dialog {
+    width: min(100%, 32rem);
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    padding: 1.25rem;
+    background: $white-1;
+    border-radius: 1.25rem;
+  }
+
+  &__header,
+  &__item,
+  &__total,
+  &__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  &__eyebrow {
+    color: $black-50;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    font-family: $heading-font-style;
+    font-size: 1.5rem;
+  }
+
+  &__close {
+    border: 0;
+    background: transparent;
+    font-size: 1.6rem;
+  }
+
+  &__items {
+    display: grid;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+    padding: 1rem 0;
+    border-top: 1px solid $border-color;
+    border-bottom: 1px solid $border-color;
+  }
+
+  &__item {
+    font-size: 0.9rem;
+  }
+
+  &__total {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  &__error {
+    margin-top: 1rem;
+    color: $discount-color;
+    font-size: 0.85rem;
+  }
+
+  &__actions {
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+
+    button {
+      min-height: 2.75rem;
+      padding: 0 1rem;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+  }
+
+  &__cancel {
+    border: 1px solid $border-color;
+    background: $white-1;
+  }
+
+  &__confirm {
+    border: 1px solid $black-1;
+    background: $black-1;
+    color: $white-1;
+  }
+}
