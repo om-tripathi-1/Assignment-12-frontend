@@ -10,10 +10,6 @@ import { getAllProducts, getProductImageUrl } from "../api/product.service";
 
 const initialFilters = { minPrice: "", maxPrice: "", sort: "newest" };
 
-/**
- * Catalog browsing page supporting category filtering, keyword searching,
- * price boundaries, sort ordering, and pagination.
- */
 const CategoryPage = () => {
   const { categoryName } = useParams();
   const [searchParams] = useSearchParams();

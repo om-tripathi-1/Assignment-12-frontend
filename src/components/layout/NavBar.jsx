@@ -92,7 +92,6 @@ const NavBar = () => {
     <header className="header">
       <div className="header__container">
         <div className="header__links">
-          {/* Mobile hamburger menu toggle */}
           <button
             className={`header__menu ${isMenuOpen ? "active" : ""}`}
             type="button"
@@ -105,12 +104,10 @@ const NavBar = () => {
             <span></span>
           </button>
 
-          {/* Brand Logo */}
           <Link to="/" className="header__logo" onClick={closeMenu}>
             <img src={logo} alt="Shop.co Logo" />
           </Link>
 
-          {/* Navigation Links */}
           <nav className={`header__nav-items ${isMenuOpen ? "active" : ""}`}>
             <Link to="/category" onClick={closeMenu}>
               Shop
@@ -128,7 +125,6 @@ const NavBar = () => {
         </div>
 
         <div className="header__actions">
-          {/* Product Search Form */}
           <form
             className={`header__actions__search-box ${isMobileSearchOpen ? "is-open" : ""}`}
             role="search"
@@ -170,7 +166,6 @@ const NavBar = () => {
             )}
           </form>
 
-          {/* Mobile Search Icon */}
           <button
             type="button"
             className="header__action__icons header__mobile-search-button search-icon"
@@ -181,7 +176,6 @@ const NavBar = () => {
             <img src={searchIcon} alt="" aria-hidden="true" />
           </button>
 
-          {/* Shopping Cart Link with Counter Badge */}
           <Link
             to="/cart"
             className="header__cart-link"
@@ -192,7 +186,6 @@ const NavBar = () => {
             {cartCount > 0 && <span className="header__cart-count">{cartCount}</span>}
           </Link>
 
-          {/* Authentication / Profile Link */}
           {!isAuthLoading &&
             (isAuthenticated ? (
               <Link

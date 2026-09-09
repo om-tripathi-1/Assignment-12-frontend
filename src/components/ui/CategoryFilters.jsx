@@ -36,7 +36,6 @@ const CategoryFilters = ({
         </button>
       </div>
 
-      {/* Categories List */}
       <FilterSection title="Categories">
         <div className="category-page__category-list">
           <Link
@@ -65,7 +64,6 @@ const CategoryFilters = ({
         </div>
       </FilterSection>
 
-      {/* Price Range Filter */}
       <FilterSection title="Price">
         <div
           className={`category-page__price-slider category-page__price-slider--min-${minPrice} category-page__price-slider--max-${maxPrice}`}
@@ -112,7 +110,6 @@ const CategoryFilters = ({
         </div>
       </FilterSection>
 
-      {/* Apply Action */}
       <button className="category-page__apply" type="button" onClick={onApply}>
         Apply Filters
       </button>

@@ -1,9 +1,5 @@
 import api from "./axios";
 
-/**
- * Registers a new user account.
- * Note: The backend enforces @gmail.com email addresses.
- */
 export const registerUser = async (userData) => {
   try {
     const response = await api.post("/auth/register", {
@@ -18,10 +14,6 @@ export const registerUser = async (userData) => {
   }
 };
 
-/**
- * Logs a user in with their credentials (email & password).
- * On success, the backend sets an HTTP-only session cookie.
- */
 export const loginUser = async (userData) => {
   try {
     const response = await api.post("/auth/login", {
@@ -35,9 +27,6 @@ export const loginUser = async (userData) => {
   }
 };
 
-/**
- * Logs out the active user and clears the session cookie.
- */
 export const logoutUser = async () => {
   try {
     const response = await api.post("/auth/logout", {});
@@ -48,9 +37,6 @@ export const logoutUser = async () => {
   }
 };
 
-/**
- * Verifies the current session cookie and retrieves user profile details.
- */
 export const getCurrentUser = async () => {
   const response = await api.get("/auth/me");
   return response.data;

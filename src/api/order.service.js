@@ -1,9 +1,5 @@
 import api from "./axios";
 
-/**
- * Places a new customer order with line items from the active cart.
- * Formats line items into the backend required schema: { product: id, quantity }
- */
 export const createOrder = async (items) => {
   try {
     const products = (items || []).map((item) => ({
@@ -20,9 +16,6 @@ export const createOrder = async (items) => {
   }
 };
 
-/**
- * Retrieves the authenticated user's complete order history.
- */
 export const getUserOrders = async () => {
   try {
     const response = await api.get("/orders/user");

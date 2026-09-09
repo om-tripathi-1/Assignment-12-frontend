@@ -1,10 +1,6 @@
 import api from "./axios";
 import { getProductImageUrl } from "./product.service";
 
-/**
- * Normalizes backend cart response documents into clean frontend cart items.
- * Safely filters out null references if a product has been removed from the database.
- */
 const normalizeItems = (data) => {
   if (!data || !Array.isArray(data.items)) return [];
 
@@ -32,9 +28,6 @@ const normalizeItems = (data) => {
     });
 };
 
-/**
- * Retrieves the current user's cart items.
- */
 export const getCartItems = async () => {
   try {
     const response = await api.get("/cart");
@@ -45,9 +38,6 @@ export const getCartItems = async () => {
   }
 };
 
-/**
- * Adds a product to the user's cart.
- */
 export const addCartItem = async (productId, quantity = 1, metadata = {}) => {
   try {
     const response = await api.post("/cart/items", {
@@ -62,9 +52,6 @@ export const addCartItem = async (productId, quantity = 1, metadata = {}) => {
   }
 };
 
-/**
- * Updates the quantity of a cart item.
- */
 export const updateCartItem = async (item, quantity) => {
   try {
     const response = await api.put(`/cart/items/${item.productId}`, { quantity }, {
@@ -77,9 +64,6 @@ export const updateCartItem = async (item, quantity) => {
   }
 };
 
-/**
- * Removes an item completely from the cart.
- */
 export const removeCartItem = async (item) => {
   try {
     const response = await api.delete(`/cart/items/${item.productId}`, {
