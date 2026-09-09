@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/icons/Logo-vector.svg";
 import searchIcon from "../../assets/icons/search-vector.svg";
@@ -6,6 +6,7 @@ import cartIcon from "../../assets/icons/cart-vector.svg";
 import userIcon from "../../assets/icons/user-vector.svg";
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
+import { getAllProducts } from "../../api/product.service";
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -13,7 +14,47 @@ const NavBar = () => {
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const searchTimeoutRef = useRef(null);
+  const searchRequestRef = useRef(0);
+  const searchInputRef = useRef(null);
+
+  useEffect(() => {
+    if (isMobileSearchOpen) searchInputRef.current?.focus();
+  }, [isMobileSearchOpen]);
+
+  useEffect(() => {
+    const query = searchQuery.trim();
+    clearTimeout(searchTimeoutRef.current);
+
+    if (query.length < 2) {
+      return undefined;
+    }
+
+    searchTimeoutRef.current = setTimeout(async () => {
+      const requestId = ++searchRequestRef.current;
+      setIsSearching(true);
+
+      try {
+        const response = await getAllProducts({ search: query, limit: 5 });
+        if (requestId === searchRequestRef.current) {
+          setSearchResults(response.products || []);
+        }
+      } catch (error) {
+        if (requestId === searchRequestRef.current) {
+          setSearchResults([]);
+        }
+        console.error("Unable to search products:", error);
+      } finally {
+        if (requestId === searchRequestRef.current) setIsSearching(false);
+      }
+    }, 400);
+
+    return () => clearTimeout(searchTimeoutRef.current);
+  }, [searchQuery]);
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
   const closeMenu = () => setIsMenuOpen(false);
@@ -24,7 +65,27 @@ const NavBar = () => {
     if (query) {
       navigate(`/category?search=${encodeURIComponent(query)}`);
       closeMenu();
+      setIsMobileSearchOpen(false);
     }
+  };
+
+  const handleSearchChange = (event) => {
+    const value = event.target.value;
+    setSearchQuery(value);
+
+    if (value.trim().length < 2) {
+      searchRequestRef.current += 1;
+      setSearchResults([]);
+      setIsSearching(false);
+    }
+  };
+
+  const handleSearchResultClick = (productId) => {
+    setSearchResults([]);
+    setSearchQuery("");
+    setIsMobileSearchOpen(false);
+    closeMenu();
+    navigate(`/products/${productId}`);
   };
 
   return (
@@ -69,7 +130,7 @@ const NavBar = () => {
         <div className="header__actions">
           {/* Product Search Form */}
           <form
-            className="header__actions__search-box"
+            className={`header__actions__search-box ${isMobileSearchOpen ? "is-open" : ""}`}
             role="search"
             onSubmit={handleSearchSubmit}
           >
@@ -80,22 +141,42 @@ const NavBar = () => {
               className="header__actions__search-box__icon"
             />
             <input
+              ref={searchInputRef}
               type="search"
               className="header__actions__search-box__input"
               placeholder="Search for products..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchChange}
               aria-label="Search products"
             />
+            {(isSearching || searchResults.length > 0) && (
+              <div className="header__search-results">
+                {isSearching ? (
+                  <p className="header__search-status">Searching...</p>
+                ) : (
+                  searchResults.map((product) => (
+                    <button
+                      className="header__search-result"
+                      key={product._id}
+                      type="button"
+                      onClick={() => handleSearchResultClick(product._id)}
+                    >
+                      <span>{product.name}</span>
+                      <small>${product.price}</small>
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
           </form>
 
           {/* Mobile Search Icon */}
           <button
             type="button"
-            className="header__action__icons search-icon"
-            style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
-            onClick={() => navigate("/category")}
+            className="header__action__icons header__mobile-search-button search-icon"
+            onClick={() => setIsMobileSearchOpen((isOpen) => !isOpen)}
             aria-label="Search"
+            aria-expanded={isMobileSearchOpen}
           >
             <img src={searchIcon} alt="" aria-hidden="true" />
           </button>

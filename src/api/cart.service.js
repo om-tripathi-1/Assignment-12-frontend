@@ -17,7 +17,8 @@ const normalizeItems = (data) => {
         : product.images;
 
       return {
-        id: product._id || product.id,
+        id: item._id || `${product._id || product.id}-${item.size || "Standard"}`,
+        productId: product._id || product.id,
         name: product.name || "Unnamed Product",
         price: Number(product.price) || 0,
         oldPrice: product.originalPrice ? Number(product.originalPrice) : null,
@@ -64,12 +65,14 @@ export const addCartItem = async (productId, quantity = 1, metadata = {}) => {
 /**
  * Updates the quantity of a cart item.
  */
-export const updateCartItem = async (productId, quantity) => {
+export const updateCartItem = async (item, quantity) => {
   try {
-    const response = await api.put(`/cart/items/${productId}`, { quantity });
+    const response = await api.put(`/cart/items/${item.productId}`, { quantity }, {
+      params: { size: item.size || "Standard" },
+    });
     return normalizeItems(response.data);
   } catch (error) {
-    console.error(`Failed to update cart item ${productId}:`, error);
+    console.error(`Failed to update cart item ${item.productId}:`, error);
     throw error;
   }
 };
@@ -77,12 +80,14 @@ export const updateCartItem = async (productId, quantity) => {
 /**
  * Removes an item completely from the cart.
  */
-export const removeCartItem = async (productId) => {
+export const removeCartItem = async (item) => {
   try {
-    const response = await api.delete(`/cart/items/${productId}`);
+    const response = await api.delete(`/cart/items/${item.productId}`, {
+      params: { size: item.size || "Standard" },
+    });
     return normalizeItems(response.data);
   } catch (error) {
-    console.error(`Failed to remove cart item ${productId}:`, error);
+    console.error(`Failed to remove cart item ${item.productId}:`, error);
     throw error;
   }
-};
+};

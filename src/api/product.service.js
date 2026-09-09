@@ -6,11 +6,10 @@ const BACKEND_ORIGIN =
     ? new URL(import.meta.env.VITE_API_URL).origin
     : "http://localhost:8080");
 
-/**
- * Resolves a product image path into an absolute URL.
- * Handles existing absolute URLs, relative server paths, and null cases.
- */
 export const getProductImageUrl = (imagePath) => {
+  if (imagePath && typeof imagePath === "object") {
+    imagePath = imagePath.path || imagePath.url;
+  }
   if (!imagePath) return "/assets/images/placeholder.png";
   if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
     return imagePath;
@@ -19,9 +18,6 @@ export const getProductImageUrl = (imagePath) => {
   return `${BACKEND_ORIGIN}${cleanPath}`;
 };
 
-/**
- * Fetches products from the catalog with optional filters, search query, sorting, and pagination.
- */
 export const getAllProducts = async (params = {}) => {
   try {
     const response = await api.get("/products", { params });
@@ -32,9 +28,6 @@ export const getAllProducts = async (params = {}) => {
   }
 };
 
-/**
- * Fetches single product details by ID.
- */
 export const getProductById = async (id) => {
   try {
     const response = await api.get(`/products/${id}`);
@@ -45,22 +38,6 @@ export const getProductById = async (id) => {
   }
 };
 
-/**
- * Fetches customer reviews for a given product ID.
- */
-export const getReviewsByProduct = async (productId) => {
-  try {
-    const response = await api.get(`/reviews/product/${productId}`);
-    return response.data;
-  } catch (error) {
-    console.error(`Failed to fetch reviews for product ${productId}:`, error);
-    throw error;
-  }
-};
-
-/**
- * Creates a new product with multipart form data (including images).
- */
 export const createProduct = async (productData) => {
   try {
     const formData = new FormData();
@@ -69,6 +46,8 @@ export const createProduct = async (productData) => {
         productData.images.forEach((image) => {
           formData.append("images", image);
         });
+      } else if (key === "variants") {
+        formData.append(key, JSON.stringify(productData[key]));
       } else if (productData[key] !== undefined && productData[key] !== null) {
         formData.append(key, productData[key]);
       }
@@ -84,9 +63,6 @@ export const createProduct = async (productData) => {
   }
 };
 
-/**
- * Updates an existing product by ID with multipart form data.
- */
 export const updateProduct = async (id, productData) => {
   try {
     const formData = new FormData();
@@ -95,6 +71,8 @@ export const updateProduct = async (id, productData) => {
         productData.images.forEach((image) => {
           formData.append("images", image);
         });
+      } else if (key === "variants") {
+        formData.append(key, JSON.stringify(productData[key]));
       } else if (productData[key] !== undefined && productData[key] !== null) {
         formData.append(key, productData[key]);
       }
@@ -106,6 +84,15 @@ export const updateProduct = async (id, productData) => {
     return response.data;
   } catch (error) {
     console.error(`Failed to update product with ID ${id}:`, error);
+    throw error;
+  }
+};
+
+export const deleteProduct = async (id) => {
+  try {
+    await api.delete(`/products/${id}`);
+  } catch (error) {
+    console.error(`Failed to delete product with ID ${id}:`, error);
     throw error;
   }
 };

@@ -88,13 +88,24 @@ const ProfilePage = () => {
             <p className="profile-page__eyebrow">Account Dashboard</p>
             <h1>My Profile</h1>
           </div>
-          <button
-            className="profile-page__logout"
-            type="button"
-            onClick={handleLogout}
-          >
-            Log Out
-          </button>
+          <div className="profile-page__header-actions">
+            {user?.role === "admin" && (
+              <button
+                className="profile-page__admin-link"
+                type="button"
+                onClick={() => navigate("/admin")}
+              >
+                Admin Dashboard
+              </button>
+            )}
+            <button
+              className="profile-page__logout"
+              type="button"
+              onClick={handleLogout}
+            >
+              Log Out
+            </button>
+          </div>
         </div>
 
         <section
@@ -113,7 +124,7 @@ const ProfilePage = () => {
             </div>
             <div>
               <dt>Account Type</dt>
-              <dd style={{ textTransform: "capitalize" }}>
+              <dd className="profile-page__account-type">
                 {user?.role || "Customer"}
               </dd>
             </div>

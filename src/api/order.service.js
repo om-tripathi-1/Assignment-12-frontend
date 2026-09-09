@@ -7,7 +7,8 @@ import api from "./axios";
 export const createOrder = async (items) => {
   try {
     const products = (items || []).map((item) => ({
-      product: item.id,
+      product: item.productId || item.id,
+      size: item.size || "Standard",
       quantity: Number(item.quantity) || 1,
     }));
 
@@ -30,4 +31,4 @@ export const getUserOrders = async () => {
     console.error("Failed to load user orders:", error);
     throw error;
   }
-};
+};

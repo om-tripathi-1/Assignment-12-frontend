@@ -52,6 +52,9 @@
   &__price-row {
     margin-bottom: 1rem;
     font-size: 1.7rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
   }
   &__original-price {
     color: $white-3;
@@ -79,6 +82,11 @@
     color: $black-70;
     margin-bottom: 0.75rem;
   }
+  &__size-warning {
+    color: $discount-color;
+    font-size: 0.8rem;
+    margin: 0.25rem 0;
+  }
   &__muted {
     color: $black-50;
     font-size: 0.85rem;
@@ -94,6 +102,13 @@
     background: $white-2;
     padding: 0.65rem 1rem;
     cursor: pointer;
+
+    &:disabled {
+      color: $black-50;
+      background: $white-3;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
   }
   &__size--selected {
     background: $black-1;

@@ -1,5 +1,3 @@
-import React from "react";
-
 const CategoryHeader = ({
   title = "Shop",
   totalProducts = 0,
@@ -25,8 +23,9 @@ const CategoryHeader = ({
       Filters
     </button>
     <label className="category-page__sort">
-      <span>Sort by </span>
+      <span className="category-page__sort-label">Sort by </span>
       <select
+        className="category-page__sort-select"
         name="sort"
         value={filters?.sort || "newest"}
         onChange={onFilterChange}

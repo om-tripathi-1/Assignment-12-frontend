@@ -1,0 +1,353 @@
+@use "../abstracts/mixins" as *;
+@use "../abstracts/variables" as *;
+
+.admin-page {
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: 2rem 1rem 5rem;
+
+  &__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  &__eyebrow {
+    color: $black-50;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  h1 {
+    font-family: $heading-font-style;
+    font-size: 2rem;
+    text-transform: uppercase;
+  }
+
+  &__user {
+    color: $black-70;
+    font-size: 0.85rem;
+  }
+
+  &__state,
+  &__message {
+    min-height: 12rem;
+    display: grid;
+    place-items: center;
+    color: $black-50;
+    text-align: center;
+  }
+
+  &__error {
+    margin: 1rem 0;
+    padding: 0.75rem 1rem;
+    border: 1px solid #f1b8bf;
+    border-radius: 0.5rem;
+    color: $discount-color;
+    background: #fff5f6;
+  }
+
+  &__add {
+    margin-bottom: 1rem;
+  }
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  border-bottom: 1px solid $border-color;
+  margin-bottom: 1.5rem;
+
+  &__button {
+    flex: 0 0 auto;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    padding: 0.75rem 0.9rem;
+    color: $black-50;
+
+    &.is-active {
+      border-bottom-color: $black-1;
+      color: $black-1;
+      font-weight: 700;
+    }
+  }
+}
+
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+
+  @include respond-to(desktop) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.admin-stat-card {
+  border: 1px solid $border-color;
+  border-radius: 0.75rem;
+  background: $white-1;
+  padding: 1rem;
+
+  &__label {
+    display: block;
+    color: $black-50;
+    font-size: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  &__value {
+    font-size: 1.75rem;
+  }
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+  border: 1px solid $border-color;
+  border-radius: 0.75rem;
+  background: $white-1;
+}
+
+.admin-table {
+  width: 100%;
+  min-width: 38rem;
+  border-collapse: collapse;
+  text-align: left;
+
+  th,
+  td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid $border-color;
+    vertical-align: middle;
+  }
+
+  th {
+    color: $black-50;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  td {
+    font-size: 0.85rem;
+  }
+
+  tr:last-child td { border-bottom: 0; }
+
+  &__empty {
+    padding: 2rem 1rem;
+    color: $black-50;
+    text-align: center;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  &__select {
+    border: 1px solid $border-color;
+    border-radius: 0.4rem;
+    background: $white-1;
+    padding: 0.4rem;
+    font-size: 0.78rem;
+    text-transform: capitalize;
+  }
+}
+
+.admin-button {
+  border: 1px solid $black-1;
+  border-radius: 0.45rem;
+  background: $black-1;
+  color: $white-1;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.55;
+  }
+
+  &--muted {
+    background: $white-1;
+    color: $black-1;
+  }
+
+  &--danger {
+    border-color: $discount-color;
+    background: $white-1;
+    color: $discount-color;
+  }
+
+  &--small {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.72rem;
+  }
+}
+
+.admin-form {
+  display: grid;
+  gap: 1rem;
+  max-width: 44rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border: 1px solid $border-color;
+  border-radius: 0.75rem;
+  background: $white-1;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+
+    h2 { font-size: 1.1rem; }
+  }
+
+  &__grid {
+    display: grid;
+    gap: 1rem;
+
+    @include respond-to(desktop) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+}
+
+.admin-field {
+  display: grid;
+  gap: 0.4rem;
+  color: $black-70;
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  input,
+  textarea,
+  select {
+    width: 100%;
+    border: 1px solid $border-color;
+    border-radius: 0.45rem;
+    background: $white-1;
+    padding: 0.7rem;
+    font: inherit;
+    font-weight: 400;
+  }
+
+  textarea { resize: vertical; }
+
+  &__hint {
+    color: $black-50;
+    font-size: 0.72rem;
+    font-weight: 400;
+  }
+}
+
+.admin-image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
+  gap: 0.6rem;
+
+  &__image {
+    width: 100%;
+    aspect-ratio: 1;
+    border: 1px solid $border-color;
+    border-radius: 0.45rem;
+    object-fit: cover;
+  }
+}
+
+.admin-variants {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0.85rem;
+  border: 1px solid $border-color;
+  border-radius: 0.45rem;
+
+  &__legend {
+    padding: 0 0.25rem;
+    color: $black-70;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+}
+
+.admin-variant {
+  display: grid;
+  grid-template-columns: auto 1fr 6rem;
+  align-items: center;
+  gap: 0.6rem;
+  color: $black-70;
+  font-size: 0.8rem;
+
+  &__size { font-weight: 600; }
+
+  &__quantity {
+    width: 100%;
+    border: 1px solid $border-color;
+    border-radius: 0.4rem;
+    padding: 0.45rem;
+  }
+}
+
+.admin-order-details {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border: 1px solid $border-color;
+  border-radius: 0.75rem;
+  background: $white-1;
+
+  &__header,
+  &__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  &__header h2 { font-size: 1.2rem; }
+
+  &__meta {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    color: $black-50;
+    font-size: 0.8rem;
+  }
+
+  &__items {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid $border-color;
+
+    img {
+      width: 4.5rem;
+      height: 4.5rem;
+      border-radius: 0.5rem;
+      object-fit: cover;
+      background: $category-div-bg-color;
+    }
+
+    p {
+      margin-top: 0.2rem;
+      color: $black-50;
+      font-size: 0.75rem;
+    }
+  }
+}

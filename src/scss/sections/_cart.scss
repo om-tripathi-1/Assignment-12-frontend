@@ -34,6 +34,19 @@
     font-size: 1rem;
   }
 
+  &__loading {
+    padding: 2rem 0;
+    color: $black-50;
+  }
+
+  &__promo-message {
+    font-size: 0.75rem;
+    margin: 0.4rem 0 0;
+
+    &.is-success { color: #10b981; }
+    &.is-error { color: #ef4444; }
+  }
+
   &__items {
     display: flex;
     flex-direction: column;

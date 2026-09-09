@@ -1,5 +1,7 @@
-import React from "react";
 import { Link, useParams } from "react-router-dom";
+
+const MAX_PRICE = 7000;
+const PRICE_STEP = 100;
 
 const FilterSection = ({ title, children }) => (
   <section className="category-page__filter-section">
@@ -17,12 +19,15 @@ const CategoryFilters = ({
   onClose,
 }) => {
   const { categoryName } = useParams();
+  const minPrice = filters.minPrice === "" ? 0 : Number(filters.minPrice);
+  const maxPrice = filters.maxPrice === "" ? MAX_PRICE : Number(filters.maxPrice);
 
   return (
     <aside className={`category-page__filters${isOpen ? " is-open" : ""}`} aria-label="Catalog filters">
       <div className="category-page__filters-header">
-        <h2>Filters</h2>
+        <h2 className="category-page__filters-title">Filters</h2>
         <button
+          className="category-page__filters-close"
           type="button"
           onClick={onClose}
           aria-label="Close filters drawer"
@@ -62,29 +67,48 @@ const CategoryFilters = ({
 
       {/* Price Range Filter */}
       <FilterSection title="Price">
-        <div className="category-page__price-fields">
-          <label>
-            <span>From</span>
+        <div
+          className={`category-page__price-slider category-page__price-slider--min-${minPrice} category-page__price-slider--max-${maxPrice}`}
+        >
+          <div className="category-page__price-track" aria-hidden="true">
+            <span className="category-page__price-track-fill" />
+          </div>
+          <label className="category-page__price-range-label">
             <input
+              className="category-page__price-range category-page__price-range--min"
               name="minPrice"
-              type="number"
+              type="range"
               min="0"
-              value={filters.minPrice}
-              onChange={onChange}
-              placeholder="$0"
+              max={MAX_PRICE}
+              step={PRICE_STEP}
+              value={minPrice}
+              onChange={(event) => {
+                const value = Number(event.target.value);
+                if (value <= maxPrice) onChange(event);
+              }}
+              aria-label="Minimum price"
             />
           </label>
-          <label>
-            <span>To</span>
+          <label className="category-page__price-range-label">
             <input
+              className="category-page__price-range category-page__price-range--max"
               name="maxPrice"
-              type="number"
+              type="range"
               min="0"
-              value={filters.maxPrice}
-              onChange={onChange}
-              placeholder="$500"
+              max={MAX_PRICE}
+              step={PRICE_STEP}
+              value={maxPrice}
+              onChange={(event) => {
+                const value = Number(event.target.value);
+                if (value >= minPrice) onChange(event);
+              }}
+              aria-label="Maximum price"
             />
           </label>
+          <div className="category-page__price-values">
+            <span>${minPrice}</span>
+            <span>${maxPrice}</span>
+          </div>
         </div>
       </FilterSection>
 

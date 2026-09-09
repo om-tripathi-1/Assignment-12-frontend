@@ -72,13 +72,29 @@ const HomePage = () => {
         setIsLoading(true);
         const [newestResponse, catalogResponse] = await Promise.all([
           getAllProducts({ sort: "newest", limit: 4 }),
-          getAllProducts({ limit: 12 }),
+          getAllProducts({ limit: 1000 }),
         ]);
 
         if (isMounted) {
-          setNewArrivals(newestResponse.products?.slice(0, 4) || []);
+          const arrivals = newestResponse.products?.slice(0, 4) || [];
+          const arrivalIds = new Set(arrivals.map((product) => product._id));
           const products = catalogResponse.products || [];
-          setTopSelling(products.slice(0, 4));
+          const topRated = products
+            .filter((product) => !arrivalIds.has(product._id))
+            .sort((firstProduct, secondProduct) => {
+              const ratingDifference =
+                (Number(secondProduct.rating) || 0) -
+                (Number(firstProduct.rating) || 0);
+              if (ratingDifference !== 0) return ratingDifference;
+              return (
+                new Date(secondProduct.createdAt || 0) -
+                new Date(firstProduct.createdAt || 0)
+              );
+            })
+            .slice(0, 4);
+
+          setNewArrivals(arrivals);
+          setTopSelling(topRated);
         }
       } catch (error) {
         console.error("Unable to load homepage products:", error);
@@ -112,7 +128,7 @@ const HomePage = () => {
         <h2 className="new-arrivals__heading">New Arrivals</h2>
         <div className="new-arrivals__container">
           {isLoading ? (
-            <p style={{ textAlign: "center", width: "100%", padding: "2rem 0", color: "#666" }}>
+            <p className="new-arrivals__loading">
               Loading new arrivals...
             </p>
           ) : (
@@ -130,7 +146,7 @@ const HomePage = () => {
         <h2 className="top-selling__heading">Top Selling</h2>
         <div className="top-selling__container">
           {isLoading ? (
-            <p style={{ textAlign: "center", width: "100%", padding: "2rem 0", color: "#666" }}>
+            <p className="top-selling__loading">
               Loading top products...
             </p>
           ) : (

@@ -22,7 +22,7 @@ const Newsletter = () => {
         </h2>
         <form className="newsletter__input-container" onSubmit={handleSubmit}>
           {isSubscribed ? (
-            <p className="newsletter__success" style={{ color: "#ffffff", fontWeight: 600 }}>
+            <p className="newsletter__success">
               ✓ Thank you for subscribing!
             </p>
           ) : (

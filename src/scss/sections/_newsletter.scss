@@ -37,10 +37,15 @@
         flex-direction: column;
         gap: 12px;
     }
+    &__success{
+        color: $white-1;
+        font-weight: 600;
+    }
     &__input{
         height: 3rem;
         border-radius: 50rem;
         border: none;
+        padding: 1rem;
         @include respond-to(desktop){
             width: 349px;
         }

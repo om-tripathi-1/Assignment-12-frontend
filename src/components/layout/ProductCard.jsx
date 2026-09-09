@@ -25,8 +25,9 @@ const ProductCard = ({
       data-product-id={productId}
       to={`/products/${productId}`}
     >
-      <div className="image">
+      <div className={`image ${section}__product-image`}>
         <img
+          className={`image-img ${section}__product-image-element`}
           src={imageSrc || "/assets/images/placeholder.png"}
           alt={product.name || "Product"}
           loading="lazy"

@@ -5,6 +5,8 @@ import CheckoutModal from "../components/ui/CheckoutModal";
 import { createOrder } from "../api/order.service";
 import { useCart } from "../contexts/CartContext";
 
+import deleteIcon from "../assets/icons/dustbin.svg"
+
 const formatPrice = (value) => `$${Number(value || 0).toFixed(0)}`;
 
 const CartItem = ({ item, onQuantityChange, onRemove }) => (
@@ -30,10 +32,10 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => (
         <button
           className="cart-page__remove"
           type="button"
-          onClick={() => onRemove(item.id)}
+          onClick={() => onRemove(item)}
           aria-label={`Remove ${item.name} from cart`}
         >
-          ×
+          <img src={deleteIcon} alt="" />
         </button>
       </div>
       <div className="cart-page__bottom-row">
@@ -52,7 +54,7 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => (
           <button
             className="qty-btn"
             type="button"
-            onClick={() => onQuantityChange(item.id, -1)}
+            onClick={() => onQuantityChange(item, -1)}
             aria-label="Decrease quantity"
           >
             −
@@ -61,7 +63,7 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => (
           <button
             className="qty-btn"
             type="button"
-            onClick={() => onQuantityChange(item.id, 1)}
+            onClick={() => onQuantityChange(item, 1)}
             aria-label="Increase quantity"
           >
             +
@@ -95,15 +97,12 @@ const CartPage = () => {
   const deliveryFee = items.length ? 15 : 0;
   const total = Math.max(0, subtotal - discount + deliveryFee);
 
-  const handleQuantityChange = (id, change) => {
-    const item = items.find((cartItem) => cartItem.id === id);
-    if (!item) return;
-
+  const handleQuantityChange = (item, change) => {
     const newQuantity = item.quantity + change;
     if (newQuantity < 1) {
-      removeItem(id);
+      removeItem(item);
     } else {
-      updateItem(id, newQuantity);
+      updateItem(item, newQuantity);
     }
   };
 
@@ -166,7 +165,7 @@ const CartPage = () => {
             </div>
 
             {isLoading ? (
-              <p style={{ padding: "2rem 0", color: "#666" }}>Loading your cart...</p>
+              <p className="cart-page__loading">Loading your cart...</p>
             ) : items.length ? (
               <div className="cart-page__items">
                 {items.map((item) => (
@@ -236,13 +235,7 @@ const CartPage = () => {
               </div>
 
               {promoMessage && (
-                <p
-                  style={{
-                    fontSize: "0.75rem",
-                    margin: "0.4rem 0 0",
-                    color: promoMessage.startsWith("✓") ? "#10b981" : "#ef4444",
-                  }}
-                >
+                <p className={`cart-page__promo-message ${promoMessage.startsWith("✓") ? "is-success" : "is-error"}`}>
                   {promoMessage}
                 </p>
               )}

@@ -3,72 +3,61 @@ import { useNavigate, useParams } from "react-router-dom";
 import Breadcrumb from "../components/ui/Breadcrumb";
 import EmptyState from "../components/ui/EmptyState";
 import ReviewCard, { RatingStars } from "../components/ui/ReviewCard";
-import {
-  getProductById,
-  getProductImageUrl,
-  getReviewsByProduct,
-} from "../api/product.service";
+import { getProductImageUrl } from "../api/product.service";
+import { getReviewsByProduct } from "../api/review.service";
 import { useCart } from "../contexts/CartContext";
+import { useProduct } from "../contexts/ProductContext";
 
 const ProductPage = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
   const { addItem } = useCart();
+  const { product, isLoading, error, loadProduct } = useProduct();
 
-  const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const [isLoading, setIsLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
-  const [error, setError] = useState("");
+  const [pageError, setPageError] = useState("");
   const [sizeWarning, setSizeWarning] = useState("");
 
   useEffect(() => {
     let isCurrent = true;
 
-    const loadProduct = async () => {
+    const loadProductDetails = async () => {
       try {
-        setIsLoading(true);
-        setError("");
-        const [productResponse, reviewResponse] = await Promise.all([
-          getProductById(productId),
+        setPageError("");
+        const [loadedProduct, reviewResponse] = await Promise.all([
+          loadProduct(productId),
           getReviewsByProduct(productId),
         ]);
 
         if (isCurrent) {
-          const loadedProduct = productResponse.product || productResponse;
-          setProduct(loadedProduct);
           setReviews(Array.isArray(reviewResponse) ? reviewResponse : []);
-
-          const availableSizes =
-            loadedProduct?.variants?.map((v) => v.size).filter(Boolean) || [];
-          if (availableSizes.length > 0) {
-            setSelectedSize(availableSizes[0]);
-          }
+          const availableSizes = loadedProduct?.variants || [];
+          setSelectedSize(
+            availableSizes.find((variant) => variant.quantity > 0)?.size || ""
+          );
         }
       } catch (loadError) {
         if (isCurrent) {
-          setError(
+          setPageError(
             loadError.response?.data?.message || "Unable to load this product."
           );
         }
-      } finally {
-        if (isCurrent) setIsLoading(false);
       }
     };
 
-    loadProduct();
+    loadProductDetails();
 
     return () => {
       isCurrent = false;
     };
-  }, [productId]);
+  }, [loadProduct, productId]);
 
   const images = product?.images || [];
-  const sizes =
-    product?.variants?.map((variant) => variant.size).filter(Boolean) || [];
+  const sizes = product?.variants || [];
 
   const averageRating = useMemo(() => {
     if (!reviews.length) return Number(product?.rating) || 0;
@@ -98,7 +87,7 @@ const ProductPage = () => {
       if (addError.response?.status === 401) {
         navigate("/login", { state: { from: `/products/${productId}` } });
       } else {
-        setError(
+          setPageError(
           addError.response?.data?.message ||
             "Unable to add this product to your cart."
         );
@@ -112,10 +101,10 @@ const ProductPage = () => {
     return <main className="product-detail-state">Loading product details...</main>;
   }
 
-  if (error || !product) {
+  if (error || pageError || !product) {
     return (
       <main className="product-detail-state">
-        <EmptyState title={error || "Product not found."} />
+        <EmptyState title={error || pageError || "Product not found."} />
       </main>
     );
   }
@@ -198,23 +187,27 @@ const ProductPage = () => {
             <div className="product-detail__option">
               <span className="product-detail__option-label">Choose Size</span>
               {sizeWarning && (
-                <p style={{ color: "#d6455f", fontSize: "0.8rem", margin: "0.25rem 0" }}>
+                <p className="product-detail__size-warning">
                   {sizeWarning}
                 </p>
               )}
               <div className="product-detail__sizes">
                 {sizes.length ? (
-                  sizes.map((size) => (
+                  sizes.map((variant) => (
                     <button
-                      className={`product-detail__size ${selectedSize === size ? "product-detail__size--selected" : ""}`}
-                      key={size}
+                      className={`product-detail__size ${selectedSize === variant.size ? "product-detail__size--selected" : ""}`}
+                      key={variant.size}
                       type="button"
+                      disabled={variant.quantity <= 0}
                       onClick={() => {
-                        setSelectedSize(size);
+                        setSelectedSize(variant.size);
+                        setQuantity((current) =>
+                          Math.min(current, Math.max(variant.quantity, 1))
+                        );
                         setSizeWarning("");
                       }}
                     >
-                      {size}
+                      {variant.size}
                     </button>
                   ))
                 ) : (
