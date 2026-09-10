@@ -138,6 +138,18 @@ const AdminDashboardPage = () => {
     }
   };
 
+  const getProductStock = (product) =>
+    (product.variants || []).reduce(
+      (total, variant) => total + (Number(variant.quantity) || 0),
+      0
+    );
+
+  const getStockStatus = (stock) => {
+    if (stock === 0) return "Out of stock";
+    if (stock <= 5) return "Low stock";
+    return "In stock";
+  };
+
   const productColumns = [
     { key: "name", label: "Product" },
     { key: "price", label: "Price", render: (product) => `$${product.price}` },
@@ -145,6 +157,19 @@ const AdminDashboardPage = () => {
       key: "category",
       label: "Category",
       render: (product) => product.category?.name || "-",
+    },
+    {
+      key: "stock",
+      label: "Stock",
+      render: (product) => {
+        const stock = getProductStock(product);
+        const status = getStockStatus(stock);
+        return (
+          <span className={`admin-stock admin-stock--${status.toLowerCase().replaceAll(" ", "-")}`}>
+            {status} ({stock})
+          </span>
+        );
+      },
     },
     {
       key: "actions",

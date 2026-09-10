@@ -43,8 +43,8 @@
     font-size: 0.75rem;
     margin: 0.4rem 0 0;
 
-    &.is-success { color: #10b981; }
-    &.is-error { color: #ef4444; }
+    &.is-success { color: $success; }
+    &.is-error { color: $error; }
   }
 
   &__items {

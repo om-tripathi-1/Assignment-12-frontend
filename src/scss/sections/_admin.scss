@@ -44,10 +44,10 @@
   &__error {
     margin: 1rem 0;
     padding: 0.75rem 1rem;
-    border: 1px solid #f1b8bf;
+    border: 1px solid $discount-color;
     border-radius: 0.5rem;
     color: $discount-color;
-    background: #fff5f6;
+    background: $peach;
   }
 
   &__add {
@@ -159,6 +159,30 @@
     padding: 0.4rem;
     font-size: 0.78rem;
     text-transform: capitalize;
+  }
+}
+
+.admin-stock {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.3rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &--in-stock {
+    background: $mint;
+    color: $green;
+  }
+
+  &--low-stock {
+    background: $sand;
+    color: $brown;
+  }
+
+  &--out-of-stock {
+    background: $peach;
+    color: $discount-color;
   }
 }
 
