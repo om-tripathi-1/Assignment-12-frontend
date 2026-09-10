@@ -1,0 +1,121 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+.product-card,
+.new-arrivals__product-card,
+.top-selling__product-card,
+.category-page__product-card {
+    width: auto;
+    height: auto;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+
+    &:hover {
+        transform: scale(1.02);
+        transition: 0.3s ease-in-out;
+    }
+
+    .image,
+    .product-card__image {
+        width: 100%;
+        aspect-ratio: 1 / 1.01;
+        overflow: hidden;
+        border-radius: 1rem;
+        background-color: $category-div-bg-color;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        @include respond-to(desktop) {
+            border-radius: 1.25rem;
+        }
+    }
+
+    .image-img,
+    .product-card__img,
+    .product-card__image-element {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .text-area,
+    .product-card__text-area {
+        .title,
+        .product-card__title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: $primary-text-color;
+            margin-top: 10px;
+        }
+
+        .rating,
+        .product-card__rating {
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: $black-50;
+            font-size: 0.85rem;
+
+            .review-card__stars {
+                display: flex;
+            }
+
+            .review-card__star {
+                width: 1rem;
+                height: 1rem;
+            }
+
+            .review-card__star--half {
+                width: 0.5rem;
+            }
+
+            .rating__score,
+            .product-card__rating-score {
+                color: $black-50;
+            }
+        }
+
+        .price-row,
+        .product-card__price-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.3rem;
+            flex-wrap: wrap;
+        }
+
+        .price,
+        .product-card__price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: $primary-text-color;
+            margin: 0;
+        }
+
+        .price__original,
+        .product-card__price-original {
+            color: $white-3;
+            text-decoration: line-through;
+            font-size: 0.95rem;
+        }
+
+        .price__discount,
+        .product-card__price-discount {
+            background: $peach;
+            color: $discount-color;
+            font-size: 0.72rem;
+            font-weight: 700;
+            border-radius: 999px;
+            padding: 0.2rem 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+}

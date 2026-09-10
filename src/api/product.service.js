@@ -1,6 +1,6 @@
 import api from "./axios";
 
-const BACKEND_ORIGIN = "https://assignment-12-backend-v256.onrender.com";
+const BACKEND_ORIGIN = "http://localhost:8080";
 
 export const getProductImageUrl = (imagePath) => {
   if (imagePath && typeof imagePath === "object") {

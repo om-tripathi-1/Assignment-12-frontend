@@ -6,6 +6,7 @@ const ProductCard = ({
   product,
   imageSrc,
   section = "new-arrivals",
+  className = "",
 }) => {
   if (!product) return null;
 
@@ -19,15 +20,23 @@ const ProductCard = ({
       ? Math.round(((originalPrice - price) / originalPrice) * 100)
       : 0;
 
+  const cardClasses = [
+    "product-card",
+    section ? `${section}__product-card` : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <Link
-      className={`${section}__product-card`}
+      className={cardClasses}
       data-product-id={productId}
       to={`/products/${productId}`}
     >
-      <div className={`image ${section}__product-image`}>
+      <div className={`image product-card__image ${section ? `${section}__product-image` : ""}`.trim()}>
         <img
-          className={`image-img ${section}__product-image-element`}
+          className={`image-img product-card__img product-card__image-element ${section ? `${section}__product-image-element` : ""}`.trim()}
           src={imageSrc || "/assets/images/placeholder.png"}
           alt={product.name || "Product"}
           loading="lazy"
@@ -37,18 +46,23 @@ const ProductCard = ({
           }}
         />
       </div>
-      <div className="text-area">
-        <h2 className="title">{product.name}</h2>
-        <div className="rating">
+      <div className="text-area product-card__text-area">
+        <h2 className="title product-card__title">{product.name}</h2>
+        <div className="rating product-card__rating">
           <RatingStars rating={rating} />
-          <span>{rating ? rating.toFixed(1) : "0"}/5</span>
+          <span className="product-card__rating-score rating__score">{rating ? rating.toFixed(1) : "0"}/5</span>
         </div>
-        <div className="price-row">
-          <h3 className="price">${price}</h3>
+        <div className="price-row product-card__price-row">
+          <h3 className="price product-card__price">${price}</h3>
           {originalPrice && (
-            <span className="price__original">${originalPrice}</span>
+            <span className="price__original product-card__price-original">${originalPrice}</span>
           )}
-          {discountPercent > 0 && <Badge text={`-${discountPercent}%`} />}
+          {discountPercent > 0 && (
+            <Badge
+              className="price__discount product-card__price-discount"
+              text={`-${discountPercent}%`}
+            />
+          )}
         </div>
       </div>
     </Link>
