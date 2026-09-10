@@ -3,10 +3,17 @@ import { useState } from "react";
 const AdminCategoryForm = ({ category, onSubmit, onCancel, isSaving }) => {
   const [name, setName] = useState(category?.name || "");
   const [description, setDescription] = useState(category?.description || "");
+  const [validationError, setValidationError] = useState("");
 
   const submitForm = (event) => {
     event.preventDefault();
-    onSubmit({ name, description });
+    if (name.trim().length < 2) {
+      setValidationError("Category name must be at least 2 characters.");
+      return;
+    }
+
+    setValidationError("");
+    onSubmit({ name: name.trim(), description: description.trim() });
   };
 
   return (
@@ -17,6 +24,7 @@ const AdminCategoryForm = ({ category, onSubmit, onCancel, isSaving }) => {
           Cancel
         </button>
       </div>
+      {validationError && <p className="admin-form__error" role="alert">{validationError}</p>}
       <label className="admin-field">
         Category name
         <input value={name} onChange={(event) => setName(event.target.value)} required />

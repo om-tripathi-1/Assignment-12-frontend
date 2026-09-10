@@ -48,6 +48,16 @@ const Login = () => {
       return;
     }
 
+    if (!/^\S+@\S+\.\S+$/.test(formData.email.trim())) {
+      setMessage("Please enter a valid email address.");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setMessage("Password must be at least 6 characters.");
+      return;
+    }
+
     try {
       setIsSubmitting(true);
       await login(formData);

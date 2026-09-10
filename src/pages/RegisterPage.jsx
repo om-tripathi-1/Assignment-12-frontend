@@ -55,8 +55,18 @@ const Register = () => {
       return;
     }
 
+    if (formData.name.trim().length < 2) {
+      setMessage("Name must be at least 2 characters.");
+      return;
+    }
+
     if (!formData.email.endsWith("@gmail.com")) {
       setMessage("Please register with a @gmail.com email address.");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setMessage("Password must be at least 6 characters.");
       return;
     }
 

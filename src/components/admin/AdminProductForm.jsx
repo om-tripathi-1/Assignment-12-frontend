@@ -10,6 +10,8 @@ const emptyProduct = {
 };
 
 const productSizes = ["Small", "Medium", "Large", "X-large"];
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+const ACCEPTED_IMAGE_FORMATS = ".jpg,.jpeg,.png,.webp,.gif,.avif";
 
 const AdminProductForm = ({ categories, product, onSubmit, onCancel, isSaving }) => {
   const [form, setForm] = useState(() =>
@@ -24,6 +26,7 @@ const AdminProductForm = ({ categories, product, onSubmit, onCancel, isSaving })
       : emptyProduct
   );
   const [images, setImages] = useState([]);
+  const [validationError, setValidationError] = useState("");
   const [variants, setVariants] = useState(() =>
     productSizes.map((size) => {
       const existingVariant = product?.variants?.find(
@@ -45,10 +48,35 @@ const AdminProductForm = ({ categories, product, onSubmit, onCancel, isSaving })
 
   const submitForm = (event) => {
     event.preventDefault();
+    const name = form.name.trim();
+    const price = Number(form.price);
+    const originalPrice = form.originalPrice === "" ? null : Number(form.originalPrice);
+    const selectedVariants = variants.filter((variant) => variant.selected);
+
+    if (!name) {
+      setValidationError("Product name is required.");
+      return;
+    }
+    if (!Number.isFinite(price) || price < 0) {
+      setValidationError("Enter a valid product price.");
+      return;
+    }
+    if (originalPrice !== null && (!Number.isFinite(originalPrice) || originalPrice < price)) {
+      setValidationError("Original price must be greater than or equal to the product price.");
+      return;
+    }
+    if (selectedVariants.some((variant) => !Number.isInteger(Number(variant.quantity)) || Number(variant.quantity) < 0)) {
+      setValidationError("Each selected size must have a whole-number quantity of 0 or more.");
+      return;
+    }
+
+    setValidationError("");
     onSubmit({
       ...form,
-      variants: variants
-        .filter((variant) => variant.selected)
+      name,
+      price,
+      originalPrice: originalPrice ?? "",
+      variants: selectedVariants
         .map(({ size, quantity }) => ({ size, quantity: Number(quantity) || 0 })),
       ...(images.length ? { images } : {}),
     });
@@ -62,6 +90,23 @@ const AdminProductForm = ({ categories, product, onSubmit, onCancel, isSaving })
     );
   };
 
+  const handleImageChange = (event) => {
+    const selectedImages = Array.from(event.target.files || []);
+    const oversizedImage = selectedImages.find(
+      (selectedImage) => selectedImage.size > MAX_IMAGE_SIZE
+    );
+
+    if (oversizedImage) {
+      setValidationError("Each image must be 5 MB or smaller.");
+      setImages([]);
+      event.target.value = "";
+      return;
+    }
+
+    setValidationError("");
+    setImages(selectedImages);
+  };
+
   return (
     <form className="admin-form" onSubmit={submitForm}>
       <div className="admin-form__header">
@@ -70,6 +115,7 @@ const AdminProductForm = ({ categories, product, onSubmit, onCancel, isSaving })
           Cancel
         </button>
       </div>
+      {validationError && <p className="admin-form__error" role="alert">{validationError}</p>}
       <label className="admin-field">
         Product name
         <input name="name" value={form.name} onChange={updateField} required />
@@ -139,8 +185,8 @@ const AdminProductForm = ({ categories, product, onSubmit, onCancel, isSaving })
             ))}
           </div>
         )}
-        <input type="file" accept="image/*" multiple onChange={(event) => setImages(Array.from(event.target.files || []))} />
-        <span className="admin-field__hint">Selecting images replaces the current product images.</span>
+        <input type="file" accept={ACCEPTED_IMAGE_FORMATS} multiple onChange={handleImageChange} />
+        <span className="admin-field__hint">JPG, JPEG, PNG, WebP, GIF, or AVIF. Maximum 5 MB per image.</span>
       </label>
       <button className="admin-button" type="submit" disabled={isSaving}>
         {isSaving ? "Saving..." : product ? "Update Product" : "Add Product"}

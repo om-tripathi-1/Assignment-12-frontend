@@ -203,6 +203,12 @@
   border-radius: 0.75rem;
   background: $white-1;
 
+  &__error {
+    margin: 0;
+    color: $discount-color;
+    font-size: 0.8rem;
+  }
+
   &__header {
     display: flex;
     align-items: center;

@@ -41,6 +41,10 @@
         color: $white-1;
         font-weight: 600;
     }
+    &__error{
+        color: $discount-color;
+        font-size: 0.8rem;
+    }
     &__input{
         height: 3rem;
         border-radius: 50rem;
