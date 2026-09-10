@@ -11,7 +11,11 @@ import {
   getAllCategories,
   updateCategory,
 } from "../api/category.service";
-import { getAdminOrders, getAdminUsers, updateOrderStatus } from "../api/admin.service";
+import {
+  getAdminOrders,
+  getAdminUsers,
+  updateOrderStatus,
+} from "../api/admin.service";
 import {
   createProduct,
   deleteProduct,
@@ -53,7 +57,9 @@ const AdminDashboardPage = () => {
       setOrders(Array.isArray(orderResponse) ? orderResponse : []);
       setUsers(userResponse);
     } catch (loadError) {
-      setError(loadError.response?.data?.message || "Unable to load dashboard data.");
+      setError(
+        loadError.response?.data?.message || "Unable to load dashboard data.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -69,7 +75,8 @@ const AdminDashboardPage = () => {
     loadCurrentDashboard();
   }, [loadDashboard, user]);
 
-  if (isAuthLoading) return <main className="admin-page__state">Loading dashboard...</main>;
+  if (isAuthLoading)
+    return <main className="admin-page__state">Loading dashboard...</main>;
   if (!user || user.role !== "admin") return <Navigate to="/" replace />;
 
   const closeForm = () => {
@@ -95,7 +102,8 @@ const AdminDashboardPage = () => {
   const saveCategory = async (categoryData) => {
     try {
       setIsSaving(true);
-      if (editingCategory) await updateCategory(editingCategory._id, categoryData);
+      if (editingCategory)
+        await updateCategory(editingCategory._id, categoryData);
       else await createCategory(categoryData);
       closeForm();
       await loadDashboard();
@@ -112,7 +120,9 @@ const AdminDashboardPage = () => {
       await deleteProduct(product._id);
       await loadDashboard();
     } catch (removeError) {
-      setError(removeError.response?.data?.message || "Unable to delete product.");
+      setError(
+        removeError.response?.data?.message || "Unable to delete product.",
+      );
     }
   };
 
@@ -122,7 +132,9 @@ const AdminDashboardPage = () => {
       await deleteCategory(category._id);
       await loadDashboard();
     } catch (removeError) {
-      setError(removeError.response?.data?.message || "Unable to delete category.");
+      setError(
+        removeError.response?.data?.message || "Unable to delete category.",
+      );
     }
   };
 
@@ -134,14 +146,16 @@ const AdminDashboardPage = () => {
         setSelectedOrder((current) => ({ ...current, status }));
       }
     } catch (statusError) {
-      setError(statusError.response?.data?.message || "Unable to update order status.");
+      setError(
+        statusError.response?.data?.message || "Unable to update order status.",
+      );
     }
   };
 
   const getProductStock = (product) =>
     (product.variants || []).reduce(
       (total, variant) => total + (Number(variant.quantity) || 0),
-      0
+      0,
     );
 
   const getStockStatus = (stock) => {
@@ -165,7 +179,9 @@ const AdminDashboardPage = () => {
         const stock = getProductStock(product);
         const status = getStockStatus(stock);
         return (
-          <span className={`admin-stock admin-stock--${status.toLowerCase().replaceAll(" ", "-")}`}>
+          <span
+            className={`admin-stock admin-stock--${status.toLowerCase().replaceAll(" ", "-")}`}
+          >
             {status} ({stock})
           </span>
         );
@@ -176,10 +192,21 @@ const AdminDashboardPage = () => {
       label: "Actions",
       render: (product) => (
         <div className="admin-table__actions">
-          <button className="admin-button admin-button--small" type="button" onClick={() => { setEditingProduct(product); setIsFormOpen(true); }}>
+          <button
+            className="admin-button admin-button--small"
+            type="button"
+            onClick={() => {
+              setEditingProduct(product);
+              setIsFormOpen(true);
+            }}
+          >
             Edit
           </button>
-          <button className="admin-button admin-button--small admin-button--danger" type="button" onClick={() => removeProduct(product)}>
+          <button
+            className="admin-button admin-button--small admin-button--danger"
+            type="button"
+            onClick={() => removeProduct(product)}
+          >
             Delete
           </button>
         </div>
@@ -195,10 +222,21 @@ const AdminDashboardPage = () => {
       label: "Actions",
       render: (category) => (
         <div className="admin-table__actions">
-          <button className="admin-button admin-button--small" type="button" onClick={() => { setEditingCategory(category); setIsFormOpen(true); }}>
+          <button
+            className="admin-button admin-button--small"
+            type="button"
+            onClick={() => {
+              setEditingCategory(category);
+              setIsFormOpen(true);
+            }}
+          >
             Edit
           </button>
-          <button className="admin-button admin-button--small admin-button--danger" type="button" onClick={() => removeCategory(category)}>
+          <button
+            className="admin-button admin-button--small admin-button--danger"
+            type="button"
+            onClick={() => removeCategory(category)}
+          >
             Delete
           </button>
         </div>
@@ -208,8 +246,16 @@ const AdminDashboardPage = () => {
 
   const orderColumns = [
     { key: "_id", label: "Order", render: (order) => order._id.slice(-8) },
-    { key: "user", label: "Customer", render: (order) => order.user?.email || "-" },
-    { key: "products", label: "Items", render: (order) => order.products?.length || 0 },
+    {
+      key: "user",
+      label: "Customer",
+      render: (order) => order.user?.email || "-",
+    },
+    {
+      key: "products",
+      label: "Items",
+      render: (order) => order.products?.length || 0,
+    },
     {
       key: "status",
       label: "Status",
@@ -220,8 +266,10 @@ const AdminDashboardPage = () => {
           onChange={(event) => changeOrderStatus(order, event.target.value)}
           aria-label={`Update status for order ${order._id.slice(-8)}`}
         >
-          {['pending', 'shipped', 'delivered', 'cancelled'].map((status) => (
-            <option key={status} value={status}>{status}</option>
+          {["pending", "shipped", "delivered", "cancelled"].map((status) => (
+            <option key={status} value={status}>
+              {status}
+            </option>
           ))}
         </select>
       ),
@@ -230,7 +278,11 @@ const AdminDashboardPage = () => {
       key: "details",
       label: "Details",
       render: (order) => (
-        <button className="admin-button admin-button--small" type="button" onClick={() => setSelectedOrder(order)}>
+        <button
+          className="admin-button admin-button--small"
+          type="button"
+          onClick={() => setSelectedOrder(order)}
+        >
           View
         </button>
       ),
@@ -244,7 +296,8 @@ const AdminDashboardPage = () => {
   ];
 
   const renderContent = () => {
-    if (isLoading) return <p className="admin-page__message">Loading dashboard data...</p>;
+    if (isLoading)
+      return <p className="admin-page__message">Loading dashboard data...</p>;
     if (activeTab === "Overview") {
       return (
         <div className="admin-overview">
@@ -254,21 +307,53 @@ const AdminDashboardPage = () => {
             <AdminStatCard label="Orders" value={orders.length} />
             <AdminStatCard label="Users" value={users.length} />
           </div>
-          <p className="admin-page__message">Use the sections above to manage the store catalog and review activity.</p>
+          <p className="admin-page__message">
+            Use the sections above to manage the store catalog and review
+            activity.
+          </p>
         </div>
       );
     }
-    if (activeTab === "Products") return <AdminTable columns={productColumns} rows={products} emptyMessage="No products found." />;
-    if (activeTab === "Categories") return <AdminTable columns={categoryColumns} rows={categories} emptyMessage="No categories found." />;
+    if (activeTab === "Products")
+      return (
+        <AdminTable
+          columns={productColumns}
+          rows={products}
+          emptyMessage="No products found."
+        />
+      );
+    if (activeTab === "Categories")
+      return (
+        <AdminTable
+          columns={categoryColumns}
+          rows={categories}
+          emptyMessage="No categories found."
+        />
+      );
     if (activeTab === "Orders") {
       return (
         <>
-          {selectedOrder && <AdminOrderDetails order={selectedOrder} onClose={() => setSelectedOrder(null)} />}
-          <AdminTable columns={orderColumns} rows={orders} emptyMessage="No orders found." />
+          {selectedOrder && (
+            <AdminOrderDetails
+              order={selectedOrder}
+              onClose={() => setSelectedOrder(null)}
+            />
+          )}
+          <AdminTable
+            columns={orderColumns}
+            rows={orders}
+            emptyMessage="No orders found."
+          />
         </>
       );
     }
-    return <AdminTable columns={userColumns} rows={users} emptyMessage="No users found." />;
+    return (
+      <AdminTable
+        columns={userColumns}
+        rows={users}
+        emptyMessage="No users found."
+      />
+    );
   };
 
   return (
@@ -282,16 +367,63 @@ const AdminDashboardPage = () => {
       </header>
       <nav className="admin-tabs" aria-label="Admin sections">
         {tabs.map((tab) => (
-          <button className={`admin-tabs__button ${activeTab === tab ? "is-active" : ""}`} key={tab} type="button" onClick={() => { setActiveTab(tab); closeForm(); }}>
+          <button
+            className={`admin-tabs__button ${activeTab === tab ? "is-active" : ""}`}
+            key={tab}
+            type="button"
+            onClick={() => {
+              setActiveTab(tab);
+              closeForm();
+            }}
+          >
             {tab}
           </button>
         ))}
       </nav>
       {error && <p className="admin-page__error">{error}</p>}
-      {isFormOpen && activeTab === "Products" && <AdminProductForm key={editingProduct?._id || "new-product"} categories={categories} product={editingProduct} onSubmit={saveProduct} onCancel={closeForm} isSaving={isSaving} />}
-      {isFormOpen && activeTab === "Categories" && <AdminCategoryForm key={editingCategory?._id || "new-category"} category={editingCategory} onSubmit={saveCategory} onCancel={closeForm} isSaving={isSaving} />}
-      {!isFormOpen && activeTab === "Products" && <button className="admin-button admin-page__add" type="button" onClick={() => { setEditingProduct(null); setIsFormOpen(true); }}>Add Product</button>}
-      {!isFormOpen && activeTab === "Categories" && <button className="admin-button admin-page__add" type="button" onClick={() => { setEditingCategory(null); setIsFormOpen(true); }}>Add Category</button>}
+      {isFormOpen && activeTab === "Products" && (
+        <AdminProductForm
+          key={editingProduct?._id || "new-product"}
+          categories={categories}
+          product={editingProduct}
+          onSubmit={saveProduct}
+          onCancel={closeForm}
+          isSaving={isSaving}
+        />
+      )}
+      {isFormOpen && activeTab === "Categories" && (
+        <AdminCategoryForm
+          key={editingCategory?._id || "new-category"}
+          category={editingCategory}
+          onSubmit={saveCategory}
+          onCancel={closeForm}
+          isSaving={isSaving}
+        />
+      )}
+      {!isFormOpen && activeTab === "Products" && (
+        <button
+          className="admin-button admin-page__add"
+          type="button"
+          onClick={() => {
+            setEditingProduct(null);
+            setIsFormOpen(true);
+          }}
+        >
+          Add Product
+        </button>
+      )}
+      {!isFormOpen && activeTab === "Categories" && (
+        <button
+          className="admin-button admin-page__add"
+          type="button"
+          onClick={() => {
+            setEditingCategory(null);
+            setIsFormOpen(true);
+          }}
+        >
+          Add Category
+        </button>
+      )}
       {renderContent()}
     </main>
   );
