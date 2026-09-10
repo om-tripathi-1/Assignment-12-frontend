@@ -7,7 +7,6 @@ const AuthField = ({
   placeholder = "",
   value = "",
   onChange,
-  required = true,
 }) => {
   return (
     <div className="login-page__field">
@@ -22,7 +21,6 @@ const AuthField = ({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        required={required}
         autoComplete={name === "password" ? "current-password" : name}
       />
     </div>
