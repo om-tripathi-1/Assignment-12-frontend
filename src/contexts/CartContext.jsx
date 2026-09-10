@@ -33,7 +33,9 @@ export const CartProvider = ({ children }) => {
         const cartItems = await getCartItems();
         if (isCurrent) setItems(cartItems);
       } catch (error) {
-        console.error("Could not load user cart:", error);
+        if (error.response?.status !== 401) {
+          console.error("Could not load user cart:", error);
+        }
         if (isCurrent) setItems([]);
       } finally {
         if (isCurrent) setIsLoading(false);
