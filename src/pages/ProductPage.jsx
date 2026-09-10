@@ -3,14 +3,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import Breadcrumb from "../components/ui/Breadcrumb";
 import EmptyState from "../components/ui/EmptyState";
 import ReviewCard, { RatingStars } from "../components/ui/ReviewCard";
+import ReviewModal from "../components/ui/ReviewModal";
 import { getProductImageUrl } from "../api/product.service";
-import { getReviewsByProduct } from "../api/review.service";
+import { getReviewsByProduct, checkCanReview } from "../api/review.service";
+import { useAuth } from "../contexts/AuthContext";
 import { useCart } from "../contexts/CartContext";
 import { useProduct } from "../contexts/ProductContext";
 
 const ProductPage = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { addItem } = useCart();
   const { product, isLoading, error, loadProduct } = useProduct();
 
@@ -21,6 +24,8 @@ const ProductPage = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [pageError, setPageError] = useState("");
   const [sizeWarning, setSizeWarning] = useState("");
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [reviewError, setReviewError] = useState("");
 
   useEffect(() => {
     let isCurrent = true;
@@ -95,6 +100,31 @@ const ProductPage = () => {
     } finally {
       setIsAdding(false);
     }
+  };
+
+  const handleOpenReviewModal = async () => {
+    if (!user) {
+      navigate("/login", { state: { from: `/products/${productId}` } });
+      return;
+    }
+
+    setReviewError("");
+
+    try {
+      const response = await checkCanReview(productId);
+      if (!response?.canReview) {
+        setReviewError("You can only review products you have purchased.");
+        return;
+      }
+      setIsReviewModalOpen(true);
+    } catch {
+      setReviewError("You can only review products you have purchased.");
+    }
+  };
+
+  const handleReviewAdded = (newReview) => {
+    setReviews((current) => [newReview, ...current]);
+    setReviewError("");
   };
 
   if (isLoading) {
@@ -255,7 +285,20 @@ const ProductPage = () => {
               Ratings & Reviews{" "}
               <span className="product-reviews__count">({reviews.length})</span>
             </h2>
+            <button
+              className="product-reviews__write-button"
+              type="button"
+              onClick={handleOpenReviewModal}
+            >
+              Write a Review
+            </button>
           </div>
+
+          {reviewError && (
+            <p className="product-detail__size-warning" role="alert" style={{ marginBottom: "1rem" }}>
+              {reviewError}
+            </p>
+          )}
 
           {reviews.length ? (
             <div className="product-reviews__grid">
@@ -271,6 +314,13 @@ const ProductPage = () => {
           )}
         </section>
       </main>
+
+      <ReviewModal
+        isOpen={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
+        productId={productId}
+        onReviewAdded={handleReviewAdded}
+      />
     </>
   );
 };

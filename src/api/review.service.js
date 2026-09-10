@@ -23,3 +23,12 @@ export const createReview = async ({ productId, rating, comment }) => {
     throw error;
   }
 };
+
+export const checkCanReview = async (productId) => {
+  try {
+    const response = await api.get(`/reviews/can-review/${productId}`);
+    return response.data;
+  } catch (error) {
+    return { canReview: false };
+  }
+};
