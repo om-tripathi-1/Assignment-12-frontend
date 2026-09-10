@@ -48,6 +48,8 @@
   }
   &__rating {
     margin-bottom: 1rem;
+    display: flex;
+    gap: 1rem;
   }
   &__price-row {
     margin-bottom: 1rem;
